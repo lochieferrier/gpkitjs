@@ -2,11 +2,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script> 
+
 	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 
-	<script>
-		a = Variable('x')
-	</script>
+	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script> 
+
+		<script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>
 {% endblock %}
