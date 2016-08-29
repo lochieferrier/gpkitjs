@@ -1,0 +1,26 @@
+<html>
+  <head>
+  <script type="text/javascript" src="{{ url_for('static', filename='three.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='jquery-3.1.0.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='TrackballControls.js') }}"></script>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>microblog</title>
+    {% endif %}
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+    <div id='output'>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul>
+          {% for message in messages %}
+              <li>{{ message }} </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </body>
+</html>
