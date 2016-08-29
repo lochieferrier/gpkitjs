@@ -6,7 +6,28 @@
 	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 
-	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script> 
-
 	<script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>
+	<script>
+
+		// Decision variable
+		x = new Variable('x');
+		console.log(x)
+		// constraints = [];
+		// // // Constraint
+		overload(function(x,Variable){
+		    // constraints = [x + 1] //Output: Adding: 22 + 33 \n 55
+		    console.log(x)
+		    b = 1+x
+		    console.log(b)
+		})(x,Variable);
+		
+		// // // Objective (to minimize)
+		// // objective = x
+
+		// // // Formulate the Model
+		// // m = Model(objective, constraints)
+
+		// // // Solve the Model
+		// // sol = m.solve(verbosity=0,callback = solved)
+	</script>
 {% endblock %}

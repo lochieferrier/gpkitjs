@@ -1,33 +1,18 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var overload = require('operator-overloading');
-overload(function () {
-	function Student(name, marks) {
-        var _this = this;
-        this.name = name;
-        this.marks = marks;
-        //THIS is WHERE we OVERLOAD '+' Operator
-        this.__plus = function (leftOperand) {
-            return 'hi'
-        };
-        this.toString = function () {
-            return _this.name + ':' + _this.marks;
-        };
-    }
-    //Define some students
-    var kushal = new Student('Kushal', 66),
-        kashish = new Student('Kashish', 90),
-        vibhor = new Student('Vibhor', 80);
 
-    //See the overload magic
-    var group1 = kushal + kashish,
-        group2 = kushal + kashish + vibhor,
-        group3 = kushal + vibhor;
+Variable = function (name,val) {
+    // console.log(arguments[0]);
 
-    //Lets print
-    console.log(group1); //Output: Kushal+Kashish:156
-    console.log(group2); //Output: Kushal+Kashish+Vibhor:236
-    console.log(group3); //Output: Kushal+Vibhor:146
-})()
+    this.name = name
+    this.val = val
+    // console.log(name,val)
+    this.__plus = function (leftOperand) {
+        console.log("adding Count");
+        return 909;
+    };
+
+};
+overload = require('operator-overloading')
 
 },{"operator-overloading":2}],2:[function(require,module,exports){
 (function (process){
