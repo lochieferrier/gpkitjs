@@ -9,25 +9,23 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>
 	<script>
 
+		//Add number operator overload, plan to get rid of this init step
+		r=setupNums()
+
 		// Decision variable
 		x = new Variable('x');
-		console.log(x)
-		// constraints = [];
-		// // // Constraint
-		overload(function(x,Variable){
-		    // constraints = [x + 1] //Output: Adding: 22 + 33 \n 55
-		    console.log(x)
-		    b = 1+x
-		    console.log(b)
-		})(x,Variable);
+
+		constraints = [];
 		
-		// // // Objective (to minimize)
-		// // objective = x
-
-		// // // Formulate the Model
-		// // m = Model(objective, constraints)
-
-		// // // Solve the Model
-		// // sol = m.solve(verbosity=0,callback = solved)
+		overload(function(x,constraintsVariable){
+		    constraints.push(x<=1)
+		})(x,constraints,Variable);
+		
+		// Objective (to minimize)
+		objective = x
+		
+		// Formulate the Model
+		m = new Model(objective, constraints)
+		sol = m.solve()
 	</script>
 {% endblock %}
