@@ -12,7 +12,9 @@ import json
 @app.route('/index')
 def index():
   flash('hello world')
-  
-  return render_template('base.html',
+  a = Variable('x')
+  print(a)
+  flash(a)
+  return render_template('index.html',
                            title='gpkitjs',
                            )
