@@ -19,12 +19,12 @@ Variable = function (name,val) {
     };
     this.__lessThanEqual = function (leftOperand) {
         console.log("less than or equal");
-        var inequality = new PosynomialInequality(leftOperand,'<=',this)
+        var inequality = new PosynomialInequality(leftOperand,'leq',this)
         return inequality
     };
     this.__greaterThanEqual = function (leftOperand) {
         console.log("greater than or equal");
-        var inequality = new PosynomialInequality(leftOperand,'>=',this)
+        var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
     // this.serialize = function () {
@@ -45,17 +45,46 @@ Model = function (cost,constraints){
     console.log('created model')
     this.cost = cost
     this.constraints = constraints
+    this.solution = new Solution()
+    
     this.solve = function(solve){
         console.log(this.serialize());
+        // var j={"name":"binchen","tree":"forest"};
+        // console.log('sending')
+        // console.log(JSON.stringify(j))
+        $.ajax({
+            url: '/index',
+            data: this.serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+                parsedJSONObj = JSON.parse(response)
+                this.solution.variables = parsedJSONObj.variables
+                console.log('solution vars')
+                console.log(this.solution.variables)
+                return this.solution
+            },
+            error: function(error) {
+                console.log(error)
+                return error;
+            }
+        });
     }
     this.serialize = function(){
         return JSON.stringify(this);
     }
 }
 
+Solution = function(){
+    this.variables = {}
+}      
 setupNums = function(){
     Number.prototype.__lessThanEqual = function (leftOperand) {
-        var inequality = new PosynomialInequality(leftOperand,'<=',this)
+        var inequality = new PosynomialInequality(leftOperand,'leq',this)
+        return inequality
+    };
+    Number.prototype.__greaterThanEqual = function (leftOperand) {
+        var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
     Number.prototype.serialize = function () {

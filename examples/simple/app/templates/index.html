@@ -18,7 +18,7 @@
 		constraints = [];
 		
 		overload(function(x,constraintsVariable){
-		    constraints.push(x<=1)
+		    constraints.push(x>=1)
 		})(x,constraints,Variable);
 		
 		// Objective (to minimize)
@@ -26,6 +26,7 @@
 		
 		// Formulate the Model
 		m = new Model(objective, constraints)
-		sol = m.solve()
+		m.solve()
+		console.log(m.solution.variables[x.ID])
 	</script>
 {% endblock %}
