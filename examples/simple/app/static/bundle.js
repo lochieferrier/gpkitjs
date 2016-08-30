@@ -15,16 +15,13 @@ Variable = function (name,val) {
     this.val = val
     this.ID = assignID()
     this.__plus = function (leftOperand) {
-        console.log("less than or equal");
         return rightOperand
     };
     this.__lessThanEqual = function (leftOperand) {
-        console.log("less than or equal");
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
         return inequality
     };
     this.__greaterThanEqual = function (leftOperand) {
-        console.log("greater than or equal");
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
@@ -37,42 +34,40 @@ PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
-    // this.serialize = function(){
-    //     return JSON.stringify(this);
-    // }
 }
 
 Model = function (cost,constraints){
-    console.log('created model')
     this.cost = cost
     this.constraints = constraints
     this.solution = new Solution()
-    this.solve = function(solve){
-        console.log(this.serialize());
-        // var j={"name":"binchen","tree":"forest"};
-        // console.log('sending')
-        // console.log(JSON.stringify(j))
-        $.ajax({
-            url: '/index',
-            data: this.serialize(),
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-                parsedJSONObj = JSON.parse(response)
-                this.solution.variables = parsedJSONObj.variables
-                console.log('solution vars')
-                console.log(this.solution.variables)
-                return this.solution
-            },
-            error: function(error) {
-                console.log(error)
-                return error;
-            }
-        });
+    
+    this.solve = function(callback){
+
+        result = new Solution()
+        sol = postData(this.serialize()).done(processReturnedSolJSON).done(function(){callback()})
+        
     }
+
     this.serialize = function(){
         return JSON.stringify(this);
     }
+
+}
+
+function postData(data) {
+    return $.ajax({
+        url : '/index',
+        data: data,
+        type: 'POST',
+    });
+}
+
+
+processReturnedSolJSON = function(response){
+    parsedJSONObj = JSON.parse(response);
+    sol = new Solution()
+    sol.variables = parsedJSONObj.variables
+    return sol
 }
 
 Solution = function(){

@@ -11,7 +11,7 @@ class Solution(object):
 			variable = varDict[variableKey]
 			print(variable)
 			self.variables[variableKey] = Variable(variable.key.descr["name"],sol(variable),variableKey)
-	
+		print(self.variables)
 class Variable(object):
 	def __init__(self,name,value,ID):
 		self.name = name

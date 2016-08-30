@@ -8,10 +8,10 @@
   </head>
   <body>
     {% block content %}{% endblock %}
-    <div id='output'>
-      <p>flash() output</p>
+    <div id='flashoutput'>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
+          <p>Output from flash() command</p>
           <ul>
           {% for message in messages %}
               <li>{{ message }} </li>

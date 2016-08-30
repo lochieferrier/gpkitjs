@@ -17,10 +17,6 @@ class MyEncoder(JSONEncoder):
 @app.route('/')
 @app.route('/index')
 def index():
-  flash('hello world')
-  a = Variable('x')
-  print(a)
-  flash(a)
   return render_template('index.html',
                            title='gpkitjs',
                            )
@@ -63,10 +59,12 @@ def indexUpdate():
   print(constraints)
   m = Model(cost,constraints)
   sol = m.solve(verbosity=1)
+  print('solution dict')
+  print(sol.program.result["variables"])
   jsSol = gpkitjs.Solution()
   jsSol.translateSol(sol,varDict)
   output = MyEncoder().encode(jsSol)
-  print output
+  # print output
   # print(varDict)
   # print r 
   # # print r[0]

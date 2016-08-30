@@ -17,16 +17,21 @@
 
 		constraints = [];
 		
-		overload(function(x,constraintsVariable){
+		overload(function(){
 		    constraints.push(x>=1)
-		})(x,constraints,Variable);
-		
+		})();
+
 		// Objective (to minimize)
 		objective = x
 		
 		// Formulate the Model
 		m = new Model(objective, constraints)
-		m.solve()
-		console.log(m.solution.variables[x.ID])
+		
+		// Solve the model
+		sol = m.solve(function(){
+			$('#output').html(sol.variables[x.ID].value)
+		})
+
 	</script>
+	<div id="output"></div>
 {% endblock %}
