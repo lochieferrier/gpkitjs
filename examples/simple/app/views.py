@@ -21,7 +21,12 @@ def index():
                            title='gpkitjs',
                            )
 
-@app.route('/index', methods=['POST'])
+@app.route('/simple', methods=['GET'])
+def simple():
+  return render_template('simple.html',
+                           title='gpkitjs',
+                           )
+@app.route('/simple', methods=['POST'])
 def indexUpdate():
   r= request.form
   print(r)

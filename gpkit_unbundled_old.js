@@ -24,9 +24,6 @@ Variable = function (name,val) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
-    // this.serialize = function () {
-    //     return JSON.stringify(this);
-    // };
 };
 
 PosynomialInequality  = function(left,oper,right){
