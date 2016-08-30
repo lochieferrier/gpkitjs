@@ -41,9 +41,9 @@ Variable = function (...args) {
             this.label = arg
         }
     }
-
-    this.__plus = function (leftOperand) {
-        
+    this.ID = assignID()
+    this.__multiply = function (leftOperand) {
+        return 'potato'
     };
     this.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)

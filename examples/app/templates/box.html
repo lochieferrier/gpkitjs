@@ -11,8 +11,26 @@
 	<script>
 
 
-		// // Add number operator overload
-		// r = setupNums()
+		// Add number operator overload
+		r = setupNums()
+
+		//Testing out new operator overloading
+		a = Variable('a',2,'-')
+		b = Variable('b',3,'-')
+		c = Variable('c','-')
+		constraints = [];
+		
+		objective = 'none'
+
+		overload(function(){
+		    constraints.push(c>=a*b)
+		})();
+
+		objective = c
+		console.log('logging constraints')
+		console.log(constraints[0])
+
+		
 
 		// // "Maximizes box volume given area and aspect ratio constraints."
 
