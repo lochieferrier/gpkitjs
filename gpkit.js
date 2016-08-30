@@ -11,7 +11,7 @@ assignID = function(){
 
 //Variable object, derived from gpkit. ID property is hidden to the user, and is used for JSON indexing
 Variable = function (...args) {
-    console.log(arguments)
+    console.log('variable args')
     // TODO: add readin for sweeps
     // Logic structure for reading in argumens is as follows:
     // The first element must be the name
@@ -20,18 +20,30 @@ Variable = function (...args) {
     // If a number, we set value and then set units for the next arg, if there is one
     console.log(arguments.length)
     for (var i = 0; i < arguments.length; i++) {
-        if (i == 0){
-            this.name = name
+
+        arg = arguments[i]
+        if(i==0){
+            this.name = arg
+        }
+        if(i==1){
+            if (typeof arg == "number"){this.val = arg}
+            if (typeof arg == "string"){this.units = arg}
+        }
+        if (i==2){
+            if (typeof arguments[1] == "string"){
+                this.label = arg
+            }
+            if (typeof arguments[1] == "number"){
+                this.units = arg
+            }
+        }
+        if (i==3){
+            this.label = arg
         }
     }
-    
-    this.val = val
-    this.units = units
-    this.label = label
-    this.ID = assignID()
 
     this.__plus = function (leftOperand) {
-        return rightOperand
+        
     };
     this.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
@@ -45,7 +57,12 @@ Variable = function (...args) {
     //     return JSON.stringify(this);
     // };
 };
+Monomial = function(){
 
+}
+Posynomial = function(){
+
+}
 PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper

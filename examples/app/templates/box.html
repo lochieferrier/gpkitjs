@@ -10,43 +10,46 @@
 
 	<script>
 
-		// Add number operator overload
-		r = setupNums()
 
-		// "Maximizes box volume given area and aspect ratio constraints."
+		// // Add number operator overload
+		// r = setupNums()
 
-		// Parameters
-		alpha = Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
-		beta = Variable("beta", 10, "-", "upper limit, wall aspect ratio")
-		gamma = Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
-		delta = Variable("delta", 10, "-", "upper limit, floor aspect ratio")
-		A_wall = Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
-		A_floor = Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
+		// // "Maximizes box volume given area and aspect ratio constraints."
 
-		// Decision variables
-		h = Variable("h", "m", "height")
-		w = Variable("w", "m", "width")
-		d = Variable("d", "m", "depth")
+		// // Parameters
+		// alpha = Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
+		// beta = Variable("beta", 10, "-", "upper limit, wall aspect ratio")
+		// gamma = Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
+		// delta = Variable("delta", 10, "-", "upper limit, floor aspect ratio")
+		// A_wall = Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
+		// A_floor = Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
 
-		// Constraints
-		constraints = [A_wall >= 2*h*w + 2*h*d,
-		               A_floor >= w*d,
-		               h/w >= alpha,
-		               h/w <= beta,
-		               d/w >= gamma,
-		               d/w <= delta]
+		// // Decision variables
+		// h = Variable("h", "m", "height")
+		// w = Variable("w", "m", "width")
+		// d = Variable("d", "m", "depth")
 
-		// Objective function
-		V = h*w*d
-		objective = 1/V  // To maximize V, we minimize its reciprocal
+		// test = w/d
+		// console.log(test)
+		// // Constraints
+		// constraints = [A_wall >= 2*h*w + 2*h*d,
+		//                A_floor >= w*d,
+		//                h/w >= alpha,
+		//                h/w <= beta,
+		//                d/w >= gamma,
+		//                d/w <= delta]
 
-		// Formulate the Model
-		m = Model(objective, constraints)
+		// // Objective function
+		// V = h*w*d
+		// objective = 1/V  // To maximize V, we minimize its reciprocal
 
-		// Solve the Model and print the results table
-		sol = m.solve(function(){
-			console.log(sol.table())
-		})
+		// // Formulate the Model
+		// m = Model(objective, constraints)
+
+		// // Solve the Model and print the results table
+		// sol = m.solve(function(){
+		// 	console.log(sol.table())
+		// })
 
 	</script>
 	<div id="output"></div>
