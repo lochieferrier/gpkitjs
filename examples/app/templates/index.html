@@ -1,0 +1,14 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
+	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
+	<h1>gpkit.js examples</h1>
+	<p style="width:30%">Click around the examples here, looking at the inline scripts in the page sources for guidance on how to use gpkitjs.<p>
+	<a href="simple">simple</a>	
+	<div id="output"></div>
+{% endblock %}

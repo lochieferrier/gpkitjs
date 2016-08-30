@@ -8,7 +8,7 @@
 
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
-<!-- 	<script>
+	<script>
 
 		//Add number operator overload, plan to get rid of this init step
 		r=setupNums()
@@ -28,11 +28,12 @@
 		// Formulate the Model
 		m = new Model(objective, constraints)
 		
+		target = '/simple'
 		// Solve the model
-		sol = m.solve(function(){
+		sol = m.solve(target,function(){
 			$('#output').html(sol.variables[x.ID].value)
 		})
 
-	</script> -->
+	</script>
 	<div id="output"></div>
 {% endblock %}

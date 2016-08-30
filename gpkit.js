@@ -41,10 +41,10 @@ Model = function (cost,constraints){
     this.constraints = constraints
     this.solution = new Solution()
     
-    this.solve = function(callback){
+    this.solve = function(target,callback){
 
         result = new Solution()
-        sol = postData(this.serialize()).done(processReturnedSolJSON).done(function(){callback()})
+        sol = postData(this.serialize(),target).done(processReturnedSolJSON).done(function(){callback()})
         
     }
 
@@ -54,9 +54,9 @@ Model = function (cost,constraints){
 
 }
 
-function postData(data) {
+function postData(data,target) {
     return $.ajax({
-        url : '/index',
+        url : target,
         data: data,
         type: 'POST',
     });
