@@ -22,8 +22,16 @@ def simple():
   return render_template('simple.html',
                            title='gpkitjs',
                            )
+
+@app.route('/box', methods=['GET'])
+def box():
+  return render_template('box.html',
+                           title='gpkitjs',
+                           )
+
 @app.route('/simple', methods=['POST'])
-def indexUpdate():
+@app.route('/box', methods=['POST'])
+def solve():
   r= request.form
   print(r)
   for line in r:

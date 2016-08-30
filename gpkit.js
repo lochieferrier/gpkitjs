@@ -10,10 +10,26 @@ assignID = function(){
 }
 
 //Variable object, derived from gpkit. ID property is hidden to the user, and is used for JSON indexing
-Variable = function (name,val) {
-    this.name = name
+Variable = function (...args) {
+    console.log(arguments)
+    // TODO: add readin for sweeps
+    // Logic structure for reading in argumens is as follows:
+    // The first element must be the name
+    // After that, we may or may not get a value, so we check whether the next is a string or a number
+    // If it is a string, we set units and leave value as undefined
+    // If a number, we set value and then set units for the next arg, if there is one
+    console.log(arguments.length)
+    for (var i = 0; i < arguments.length; i++) {
+        if (i == 0){
+            this.name = name
+        }
+    }
+    
     this.val = val
+    this.units = units
+    this.label = label
     this.ID = assignID()
+
     this.__plus = function (leftOperand) {
         return rightOperand
     };
