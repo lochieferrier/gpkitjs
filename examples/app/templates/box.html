@@ -15,17 +15,18 @@
 		r = setupNums()
 
 		//Testing out new operator overloading
-		a = Variable('a',2,'-')
-		b = Variable('b',3,'-')
-		c = Variable('c','-')
+		a = new Variable('a',2,'-')
+		b = new Variable('b',3,'-')
+		d = new Variable('d',3,'-')
+		c = new Variable('c','-')
 		constraints = [];
 		
 		objective = 'none'
-
+		console.log('pre multiplication')
 		overload(function(){
-		    constraints.push(c>=a*b)
+		    constraints.push(c>=a*b*d)
 		})();
-
+		console.log('after multiplication')
 		objective = c
 		console.log('logging constraints')
 		console.log(constraints[0])
