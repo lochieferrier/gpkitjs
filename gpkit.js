@@ -42,10 +42,10 @@ Variable = function (...args) {
     this.ID = assignID()
     this.__multiply = function (leftOperand) {
         return new Monomial([[leftOperand,1],[this,1]],1)
-    };
+    }
     this.__divide = function (leftOperand){
+        console.log('firing divide')
         return new Monomial([[leftOperand,1],[this,-1]],1)
-        console.log('divide fired')
     }
     this.__pow = function (leftOperand){
         console.log('you cannot do that with vars')
@@ -87,15 +87,17 @@ PosynomialInequality  = function(left,oper,right){
     this.oper = oper
     this.right = right
     // Assemble the nested left and right sides into monomials or signomials
+
     this.assemble = function(){
         // Handle the left side
-        this.assembleEquation(left)
+        this.assembleEquation(this.left)
         // Handle the right side
-        this.assembleEquation(right)
+        this.assembleEquation(this.right)
     }
     this.assembleEquation = function(nestedPosynomial){
         if (nestedPosynomial instanceof Variable){
-            this.left = Monomial
+            //TODO, major issue with
+            // this.left = new Monomial([nestedPosynomial,1],1)
         }
         if (nestedPosynomial instanceof Signomial){
             for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
@@ -148,18 +150,8 @@ PosynomialInequality  = function(left,oper,right){
         }
         return ret;
     }
-    this.recursiveObjectTraverse = function(obj){
-        for (var k in obj)
-        {
-            if (typeof obj[k] == "object" && obj[k] !== null)
-                console.log(obj[k])
-                // if (obj[k] instanceof Monomial)
-                //     console.log('picked up monomial')
-                //     this.recursiveObjectTraverse(obj[k]);
-            else
-                console.log(obj,k,obj[k])
-        }
-    }
+
+    this.assemble()
 }
 
 Model = function (cost,constraints){
