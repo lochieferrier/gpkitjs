@@ -28,7 +28,8 @@
 		console.log('pre multiplication')
 		overload(function(){
 		    // constraints.push(c>=a*b*d*e*f*g)
-		    constraints.push(c>=2^a)
+		    constraints.push(c>=a/b)
+		    // constraints.push(c<=a^2)
 		})();
 		console.log(constraints[0])
 		constraints[0].assemble()

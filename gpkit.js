@@ -41,17 +41,19 @@ Variable = function (...args) {
     }
     this.ID = assignID()
     this.__multiply = function (leftOperand) {
-        return new Monomial([[this,1],[leftOperand,1]],1)
+        return new Monomial([[leftOperand,1],[this,1]],1)
     };
-    // this.__divide = function (leftOperand){
-
-    // }
+    this.__divide = function (leftOperand){
+        return new Monomial([[leftOperand,1],[this,-1]],1)
+        console.log('divide fired')
+    }
     this.__pow = function (leftOperand){
-        console.log('pow works')
-        return new Monomial([leftOperand,this],1)
+        console.log('you cannot do that with vars')
+        return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        console.log('bitwise xor power')
+        console.log('bitwise xor power for var')
+        return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
@@ -209,6 +211,10 @@ setupNums = function(){
     Number.prototype.serialize = function () {
         return JSON.stringify(this)
     };
+    Number.prototype.__bitwiseXOR = function(leftOperand){
+        console.log('bitwise xor power for numb')
+        return new Monomial([leftOperand,this],1)
+    }
 }
 
 overload = require('operator-overloading')
