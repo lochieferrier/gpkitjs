@@ -47,7 +47,11 @@ Variable = function (...args) {
 
     // }
     this.__pow = function (leftOperand){
+        console.log('pow works')
         return new Monomial([leftOperand,this],1)
+    }
+    this.__bitwiseXOR = function(leftOperand){
+        console.log('bitwise xor power')
     }
     this.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
@@ -208,8 +212,6 @@ setupNums = function(){
 }
 
 overload = require('operator-overloading')
-
-
 },{"operator-overloading":2}],2:[function(require,module,exports){
 (function (process){
 'use strict';
@@ -11634,4 +11636,3 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}]},{},[1]);
-
