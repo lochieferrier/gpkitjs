@@ -41,15 +41,13 @@ Variable = function (...args) {
     }
     this.ID = assignID()
     this.__multiply = function (leftOperand) {
-        console.log('multiply functionality')
-        console.log('')
-        return Monomial([this,leftOperand],[],1)
+        return new Monomial([[this,1],[leftOperand,1]],1)
     };
-    this.__divide = function (leftOperand){
+    // this.__divide = function (leftOperand){
 
-    }
+    // }
     this.__pow = function (leftOperand){
-        
+        return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
@@ -63,17 +61,99 @@ Variable = function (...args) {
     //     return JSON.stringify(this);
     // };
 };
-Signomial = function(expDict,)
-Monomial = function(variables,powers,constant){
-
+Signomial = function(monomialsArr){
+    //For each monomial we store its coefficient and then the monomial itself
+    this.monomialsArr = monomialsArr
 }
-Posynomial = function(){
-
+Monomial = function(expArr,constants){
+    this.expArr = expArr
+    this.constants = constants
+    this.__greaterThanEqual = function (leftOperand) {
+        var inequality = new PosynomialInequality(leftOperand,'geq',this)
+        return inequality
+    };
 }
+// Posynomial = function(){
+
+// }
 PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
+    // Assemble the nested left and right sides into monomials or signomials
+    this.assemble = function(){
+        // Handle the left side
+        this.assembleEquation(left)
+        // Handle the right side
+        this.assembleEquation(right)
+    }
+    this.assembleEquation = function(nestedPosynomial){
+        if (nestedPosynomial instanceof Variable){
+            this.left = Monomial
+        }
+        if (nestedPosynomial instanceof Signomial){
+            for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
+
+            }
+        }
+        if (nestedPosynomial instanceof Monomial){
+            this.assembleMonomial(nestedPosynomial)
+            // this.recursiveObjectTraverse(nestedPosynomial)
+        }
+    }
+    this.assembleMonomial = function(monomial){
+        /*Assemble a monomial with a nested expArr into a clean
+        expArray.
+
+        The simplest example is b*c*d
+
+        After operator overloading, this is stored as [[[b,1],[c,1]],[d,1]]
+
+        What we want is [[b,1],[c,1],[d,1]]
+
+        The way we do it is to go through each element of the array recursively, and
+        check whether it is an array, until we get down to a single 2D array (the 'expDict'
+        of javascript) and we just extract that out and add it to the end array. This is a recursive process,
+        because the equation can be as long, or as nested, as the user chooses.
+
+        */
+        console.log(monomial.expArr)
+        result = this.flatten(monomial.expArr)
+        console.log(result)
+        for(var i = 0; i < result.length; i++) {
+            dictLine = result[i]
+            //Log out the variable and the power
+            console.log(dictLine[0],dictLine[1])
+        }
+
+    }
+
+    this.flatten = function flatten(ary) {
+        var ret = [];
+        for(var i = 0; i < ary.length; i++) {
+            subArr = ary[i]
+            console.log(subArr)
+            if(subArr[0] instanceof Monomial) {
+                console.log('found monomial, going deeper')
+                ret = ret.concat(flatten(subArr[0].expArr));
+            } else {
+                ret.push(ary[i]);
+            }
+        }
+        return ret;
+    }
+    this.recursiveObjectTraverse = function(obj){
+        for (var k in obj)
+        {
+            if (typeof obj[k] == "object" && obj[k] !== null)
+                console.log(obj[k])
+                // if (obj[k] instanceof Monomial)
+                //     console.log('picked up monomial')
+                //     this.recursiveObjectTraverse(obj[k]);
+            else
+                console.log(obj,k,obj[k])
+        }
+    }
 }
 
 Model = function (cost,constraints){

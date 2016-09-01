@@ -18,19 +18,22 @@
 		a = new Variable('a',2,'-')
 		b = new Variable('b',3,'-')
 		d = new Variable('d',3,'-')
+		e = new Variable('e',2,'-')
+		f = new Variable('f',3,'-')
+		g = new Variable('g',3,'-')
 		c = new Variable('c','-')
 		constraints = [];
 		
 		objective = 'none'
 		console.log('pre multiplication')
 		overload(function(){
-		    constraints.push(c>=a*b*d)
+		    constraints.push(c>=a*b*d*e*f*g)
+		    // constraints.push(c>=a**2)
 		})();
-		console.log('after multiplication')
-		objective = c
-		console.log('logging constraints')
 		console.log(constraints[0])
-
+		constraints[0].assemble()
+		objective = c
+		
 		
 
 		// // "Maximizes box volume given area and aspect ratio constraints."
