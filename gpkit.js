@@ -44,15 +44,15 @@ Variable = function (...args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
-        console.log('firing divide')
+        // console.log('firing divide')
         return new Monomial([[leftOperand,1],[this,-1]],1)
     }
     this.__pow = function (leftOperand){
-        console.log('you cannot do that with vars')
+        // console.log('you cannot do that with vars')
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        console.log('bitwise xor power for var')
+        // console.log('bitwise xor power for var')
         return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
@@ -125,13 +125,13 @@ PosynomialInequality  = function(left,oper,right){
         because the equation can be as long, or as nested, as the user chooses.
 
         */
-        console.log(monomial.expArr)
+        // console.log(monomial.expArr)
         result = this.flatten(monomial.expArr)
-        console.log(result)
+        // console.log(result)
         for(var i = 0; i < result.length; i++) {
             dictLine = result[i]
             //Log out the variable and the power
-            console.log(dictLine[0],dictLine[1])
+            // console.log(dictLine[0],dictLine[1])
         }
 
     }
@@ -140,9 +140,9 @@ PosynomialInequality  = function(left,oper,right){
         var ret = [];
         for(var i = 0; i < ary.length; i++) {
             subArr = ary[i]
-            console.log(subArr)
+            // console.log(subArr)
             if(subArr[0] instanceof Monomial) {
-                console.log('found monomial, going deeper')
+                // console.log('found monomial, going deeper')
                 ret = ret.concat(flatten(subArr[0].expArr));
             } else {
                 ret.push(ary[i]);
@@ -204,7 +204,7 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        console.log('bitwise xor power for numb')
+        // console.log('bitwise xor power for numb')
         return new Monomial([leftOperand,this],1)
     }
 }
@@ -239,6 +239,7 @@ var funcNames = {
     '>>>': '__zeroFillRSHIFT',
     '-': '__minus',
     '*': '__multiply',
+    '**': '__pow',
     '%': '__modulus',
     '/': '__divide',
     'u-': '__unaryNegation',
@@ -427,6 +428,8 @@ module.exports = exports = function (func) {
     var retFn = Function.apply(func, args);
     if (process.env.OVERLOAD_DEBUG) console.log(JSON.stringify(program, null, 4));
     if (process.env.OVERLOAD_DEBUG) console.log(retFn.toString());
+    // console.log(JSON.stringify(program, null, 4));
+    // console.log(retFn.toString());
     return retFn;
 };
 
@@ -505,6 +508,9 @@ cons.forEach(function (constructor) {
     });
     defineDefaultProp(constructor, funcNames['*'], function (o) {
         return o * this;
+    });
+    defineDefaultProp(constructor, funcNames['**'], function (o) {
+        return o ** this;
     });
     defineDefaultProp(constructor, funcNames['%'], function (o) {
         return o % this;
@@ -674,6 +680,7 @@ exports.functionNames = funcNames;
         BitwiseSHIFT: 10,
         Additive: 11,
         Multiplicative: 12,
+        Power: 12,
         Unary: 13,
         Postfix: 14,
         Call: 15,
@@ -708,7 +715,8 @@ exports.functionNames = funcNames;
         '-': Precedence.Additive,
         '*': Precedence.Multiplicative,
         '%': Precedence.Multiplicative,
-        '/': Precedence.Multiplicative
+        '/': Precedence.Multiplicative,
+        '**': Precedence.Power
     };
 
     //Flags
@@ -7580,7 +7588,7 @@ parseStatement: true, parseSourceElement: true */
                     '=', '+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '>>>=',
                     '&=', '|=', '^=', ',',
                     // binary/unary operators
-                    '+', '-', '*', '/', '%', '++', '--', '<<', '>>', '>>>', '&',
+                    '+', '-', '*','**', '/', '%', '++', '--', '<<', '>>', '>>>', '&',
                     '|', '^', '!', '~', '&&', '||', '?', ':', '===', '==', '>=',
                     '<=', '<', '>', '!=', '!=='];
 
