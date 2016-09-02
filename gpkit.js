@@ -91,6 +91,15 @@ Monomial = function(expArr,constant){
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
+    this.__divide = function (leftOperand){
+        // console.log('firing divide')
+        return new Monomial([[leftOperand,1],[this,-1]],1)
+    }
+    this.assemble = function(){
+        this.expArr = flatten(this.expArr)
+        console.log(this.expArr)
+    }
+    this.assemble()
 }
 
 // Posynomial = function(){
@@ -137,17 +146,20 @@ PosynomialInequality  = function(left,oper,right){
         if (nestedPosynomial instanceof Monomial){
             // console.log('is instance')
             if (side == 'left'){
-                // console.log([this.assembleMonomial(nestedPosynomial)])
-                this.left = new Posynomial([this.assembleMonomial(nestedPosynomial)]);
+                this.left = new Posynomial([assembleMonomial(nestedPosynomial)]);
             }
             if (side == 'right'){
-                this.right = new Posynomial([this.assembleMonomial(nestedPosynomial)]);
+                this.right = new Posynomial([assembleMonomial(nestedPosynomial)]);
             }
 
         }
         // console.log(this)
     }
-    this.assembleMonomial = function(monomial){
+    
+    this.assemble()
+}
+
+assembleMonomial = function(monomial){
         /*Assemble a monomial with a nested expArr into a clean
         expArray.
 
@@ -163,19 +175,17 @@ PosynomialInequality  = function(left,oper,right){
         because the equation can be as long, or as nested, as the user chooses.
 
         */
-        // console.log(monomial.expArr)
-        result = this.flatten(monomial.expArr)
-        // console.log(result)
-        for(var i = 0; i < result.length; i++) {
-            dictLine = result[i]
-            //Log out the variable and the power
-            // console.log(dictLine[0],dictLine[1])
-        }
+
+        result = flatten(monomial.expArr)
+
+        // for(var i = 0; i < result.length; i++) {
+        //     dictLine = result[i]
+        // }
         return monomial
+}
 
-    }
 
-    this.flatten = function flatten(ary) {
+flatten = function flatten(ary) {
         var ret = [];
         for(var i = 0; i < ary.length; i++) {
             subArr = ary[i]
@@ -188,10 +198,8 @@ PosynomialInequality  = function(left,oper,right){
             }
         }
         return ret;
-    }
-
-    this.assemble()
 }
+
 
 Model = function (cost,constraints){
     this.cost = cost
@@ -238,6 +246,10 @@ setupNums = function(){
     Number.prototype.__greaterThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
+    };
+    Number.prototype.__divide = function (leftOperand) {
+         // console.log('firing divide')
+        return new Monomial([[leftOperand,1],[this,-1]],1)
     };
     Number.prototype.serialize = function () {
         return JSON.stringify(this)

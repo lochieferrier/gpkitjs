@@ -33,7 +33,6 @@ class Solver(object):
 		  for line in r:
 		  	resultString = str(line);
 		  self.modelDict = json.loads(resultString)
-	
 	def createSignomial(self,JSsignomial,varDict):
 
 
@@ -42,8 +41,8 @@ class Solver(object):
 	  		# print leftSide["monomialsArr"]
 	  		expDictList = []
 	  		constantsList = []
-	  		print 'printing js signomial'
-	  		print JSsignomial
+	  		# print 'printing js signomial'
+	  		# print JSsignomial
 	  		for monomial in JSsignomial["monomialsArr"]:
 	  			expDict = {}
 	  			# print monomial["expArr"]
@@ -52,10 +51,10 @@ class Solver(object):
 	  				# print variableArr
 
 	  				jsVar = variableArr[0]
-	  				print 'printing jsvar'
-	  				print jsVar
+	  				# print 'printing jsvar'
+	  				# print jsVar
 
-	  				print(type(jsVar))
+	  				# print(type(jsVar))
 	  				if "name" in jsVar:
 	  					# This means we got 
 	  					tempVar = gpkit.Variable(jsVar["name"])
@@ -75,17 +74,20 @@ class Solver(object):
 			  					varDict[jsVar["ID"]] = tempVar
 			  				else:
 			  					tempVar = varDict[jsVar["ID"]]
+			  				expDict[tempVar] = variableArr[1]  
 	  				else:
 	  					# If there isn't a name, it musn't be a variable, but instead
 	  					# a raw number
-	  					print jsVar
+	  					# print jsVar
 	  					constant*=jsVar
 
 	  				
 	  			expDictList += [expDict]
 	  			constantsList += [constant]
-	  			print(constantsList)
-	  		return gpkit.Signomial('')
+	  			# print(constantsList)
+	  		# print tuple(expDictList)
+	  		# print tuple(constantsList)
+	  		return gpkit.Signomial(tuple(expDictList),tuple(constantsList))
 
 	  			# print expDict
 	def solve(self):
@@ -98,6 +100,16 @@ class Solver(object):
 	  	# print varDict
 	  	right = self.createSignomial(constraint['right'],varDict)
 	  	# print varDict
+	  	if constraint['oper'] == "leq":
+	  		constraints+=[left<=right]
+	  	if constraint['oper'] == "geq":
+	  		constraints+=[left>=right]
+
+	  print constraints
+	  print "model dict"
+	  print self.modelDict["cost"]
+	  # print self.createSignomial(self.modelDict["cost"],varDict)
+
 	  costDict = self.modelDict["cost"]
 	  cost = varDict[costDict["ID"]]
 	  # costVar = Variable(cost["name"])

@@ -52,7 +52,7 @@
 		d = new Variable("d", "m", "depth")
 		constraints = []
 		// Constraints
-
+		objective = []
 		overload(function(){
 		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
 		    constraints.push(A_floor >= w*d,
@@ -65,6 +65,8 @@
 			V = h*w*d
 			objective = 1/V  // To maximize V, we minimize its reciprocal
 		})();
+		console.log(V)
+		console.log(objective)
 		// console.log(constraints)
 
 		// Forgot that I am already autoassembling posynomial inequalities
