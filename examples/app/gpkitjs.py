@@ -33,25 +33,71 @@ class Solver(object):
 		  for line in r:
 		  	resultString = str(line);
 		  self.modelDict = json.loads(resultString)
+	
+	def createSignomial(self,JSsignomial,varDict):
+
+
+	  	# expArr = leftSide["expArr"]
+	  	if not JSsignomial["isSignomial"]:
+	  		# print leftSide["monomialsArr"]
+	  		expDictList = []
+	  		constantsList = []
+	  		print 'printing js signomial'
+	  		print JSsignomial
+	  		for monomial in JSsignomial["monomialsArr"]:
+	  			expDict = {}
+	  			# print monomial["expArr"]
+	  			constant = 1
+	  			for variableArr in monomial["expArr"]:
+	  				# print variableArr
+
+	  				jsVar = variableArr[0]
+	  				print 'printing jsvar'
+	  				print jsVar
+
+	  				print(type(jsVar))
+	  				if "name" in jsVar:
+	  					# This means we got 
+	  					tempVar = gpkit.Variable(jsVar["name"])
+	  					if "units" in jsVar:
+		  					tempVar.units = jsVar["units"]
+		  				if "val" in jsVar:
+		  					tempVar = gpkit.Variable(str(tempVar.exps[0].keys()[0]),jsVar["val"],jsVar["units"])
+
+		  				if "label" in jsVar:
+		  					tempVar.label = jsVar["label"]
+		  				# print tempVar
+		  				# We have all these variables coming in, but need to track which is which, this was the point
+		  				# of the ID assignment
+		  				# We store variables in a dictionary under JS ID
+		  				if "ID" in jsVar:
+			  				if jsVar["ID"] not in varDict:
+			  					varDict[jsVar["ID"]] = tempVar
+			  				else:
+			  					tempVar = varDict[jsVar["ID"]]
+	  				else:
+	  					# If there isn't a name, it musn't be a variable, but instead
+	  					# a raw number
+	  					print jsVar
+	  					constant*=jsVar
+
+	  				
+	  			expDictList += [expDict]
+	  			constantsList += [constant]
+	  			print(constantsList)
+	  		return gpkit.Signomial('')
+
+	  			# print expDict
 	def solve(self):
 
 	  constraints = []
 	  varDict = {}
+	  
 	  for constraint in self.modelDict["constraints"]:
-	  	# print type(constraint)
-	  	print ('processing left hand side')
-	  	leftSide = constraint["left"]
-	  	expArr = leftSide["expArr"]
-	  	
-	  	# if type(constraint["left"]) == dict:
-	  	# 	varProperties = constraint["left"]
-	  	# 	# inputVarsDict[varProperties["ID"]] = varProperties
-	  	# 	tempVar = gpkit.Variable(varProperties["name"])
-	  	# 	constraint["left"] = tempVar
-	  	# 	print(varProperties["ID"])
-	  	# 	varDict[varProperties["ID"]] = tempVar
-	  	# if constraint["oper"] == "geq":
-	  	# 	constraints +=[constraint["left"] >= constraint["right"]]
+	  	left = self.createSignomial(constraint['left'],varDict)
+	  	# print varDict
+	  	right = self.createSignomial(constraint['right'],varDict)
+	  	# print varDict
 	  costDict = self.modelDict["cost"]
 	  cost = varDict[costDict["ID"]]
 	  # costVar = Variable(cost["name"])

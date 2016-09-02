@@ -17,6 +17,10 @@ Variable = function (...args) {
     // After that, we may or may not get a value, so we check whether the next is a string or a number
     // If it is a string, we set units and leave value as undefined
     // If a number, we set value and then set units for the next arg, if there is one
+    if (arguments.length < 1){
+        console.log('the variable needs a name')
+    }
+
     for (var i = 0; i < arguments.length; i++) {
 
         arg = arguments[i]
@@ -82,7 +86,7 @@ Signomial = function(monomialsArr){
 
 Monomial = function(expArr,constant){
     this.expArr = expArr
-    this.constants = constant
+    // this.constant = constant
     this.__greaterThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
@@ -111,15 +115,17 @@ PosynomialInequality  = function(left,oper,right){
         this.assembleEquation(this.left,'left')
         // Handle the right side
         this.assembleEquation(this.right,'right')
+        console.log(this)
     }
     this.assembleEquation = function(nestedPosynomial,side){
+        // console.log(nestedPosynomial,side)
         if (!(nestedPosynomial instanceof Monomial)){
-
+            console.log
             if (side == 'left'){
-                this.left = new Posynomial([new Monomial([nestedPosynomial,1],1)]);
+                this.left = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
             if (side == 'right'){
-                this.right = new Posynomial([new Monomial([nestedPosynomial,1],1)]);
+                this.right = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
 
         }
@@ -129,8 +135,9 @@ PosynomialInequality  = function(left,oper,right){
         //     }
         // }
         if (nestedPosynomial instanceof Monomial){
-            
+            // console.log('is instance')
             if (side == 'left'){
+                // console.log([this.assembleMonomial(nestedPosynomial)])
                 this.left = new Posynomial([this.assembleMonomial(nestedPosynomial)]);
             }
             if (side == 'right'){
@@ -138,6 +145,7 @@ PosynomialInequality  = function(left,oper,right){
             }
 
         }
+        // console.log(this)
     }
     this.assembleMonomial = function(monomial){
         /*Assemble a monomial with a nested expArr into a clean
@@ -163,6 +171,7 @@ PosynomialInequality  = function(left,oper,right){
             //Log out the variable and the power
             // console.log(dictLine[0],dictLine[1])
         }
+        return monomial
 
     }
 
