@@ -79,25 +79,40 @@ Monomial = function(expArr,constants){
         return inequality
     };
 }
+
 // Posynomial = function(){
 
 // }
+assembleFromForEach = function(item,index){
+    console.log(item)
+        item.assemble()
+}
 PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
+    // console.log(this.left)
+    // console.log(this.right)
     // Assemble the nested left and right sides into monomials or signomials
-
+    this.assembleFromForEach = function(item,index){
+        item.assemble()
+    }
     this.assemble = function(){
         // Handle the left side
-        this.assembleEquation(this.left)
+        this.assembleEquation(this.left,'left')
         // Handle the right side
-        this.assembleEquation(this.right)
+        this.assembleEquation(this.right,'right')
     }
-    this.assembleEquation = function(nestedPosynomial){
-        if (nestedPosynomial instanceof Variable){
-            //TODO, major issue with
-            // this.left = new Monomial([nestedPosynomial,1],1)
+    this.assembleEquation = function(nestedPosynomial,side){
+        if (!(nestedPosynomial instanceof Monomial)){
+
+            if (side == 'left'){
+                this.left = new Monomial([nestedPosynomial,1],1)
+            }
+            if (side == 'right'){
+                this.right = new Monomial([nestedPosynomial,1],1)
+            }
+
         }
         if (nestedPosynomial instanceof Signomial){
             for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
@@ -106,7 +121,6 @@ PosynomialInequality  = function(left,oper,right){
         }
         if (nestedPosynomial instanceof Monomial){
             this.assembleMonomial(nestedPosynomial)
-            // this.recursiveObjectTraverse(nestedPosynomial)
         }
     }
     this.assembleMonomial = function(monomial){

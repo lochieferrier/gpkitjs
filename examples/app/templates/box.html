@@ -9,71 +9,77 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
 	<script>
-		r = setupNums()
-		//Testing out new operator overloading
-		a = new Variable('a',2,'-')
-		b = new Variable('b',3,'-')
-		d = new Variable('d',3,'-')
-		e = new Variable('e',2,'-')
-		f = new Variable('f',3,'-')
-		g = new Variable('g',3,'-')
-		c = new Variable('c','-')
-		constraints = [];
-		
-		objective = 'none'
-		console.log('pre multiplication')
-		overload(function(){
-		    // constraints.push(c>=a*b*d*e*f*g)
-		    constraints.push(c>=(a^2))
-
-		    // constraints.push(c<=a^2)
-		})();
-		console.log(constraints[0])
-		constraints[0].assemble()
-		console.log(constraints[0])
-		objective = c
-		
-		// // Add number operator overload
 		// r = setupNums()
-
-		// // // "Maximizes box volume given area and aspect ratio constraints."
-
-		// // // Parameters
-		// alpha = new Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
-		// beta = new Variable("beta", 10, "-", "upper limit, wall aspect ratio")
-		// gamma = new Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
-		// delta = new Variable("delta", 10, "-", "upper limit, floor aspect ratio")
-		// A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
-		// A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
-
-		// // Decision variables
-		// h = new Variable("h", "m", "height")
-		// w = new Variable("w", "m", "width")
-		// d = new Variable("d", "m", "depth")
-		// constraints = []
-		// // Constraints
-
+		// //Testing out new operator overloading
+		// a = new Variable('a',2,'-')
+		// b = new Variable('b',3,'-')
+		// d = new Variable('d',3,'-')
+		// e = new Variable('e',2,'-')
+		// f = new Variable('f',3,'-')
+		// g = new Variable('g',3,'-')
+		// c = new Variable('c','-')
+		// constraints = [];
+		
+		// objective = 'none'
+		// console.log('pre multiplication')
 		// overload(function(){
-		//  	// constraints.push(A_wall >= 2*h*w + 2*h*d)
-		//     constraints.push(//A_floor >= w*d,
-		//                // h/w >= alpha)
-		//              //   h/w <= beta,
-		//              //   d/w >= gamma,
-		//              //   d/w <= delta]
+		//     // constraints.push(c>=a*b*d*e*f*g)
+		//     constraints.push(c>=(a^2))
+
+		//     // constraints.push(c<=a^2)
 		// })();
+		// console.log(constraints[0])
+		// constraints[0].assemble()
+		// console.log(constraints[0])
+		// objective = c
+		
+		// Add number operator overload
+		r = setupNums()
 
-		// console.log(constraints)
-		// // // Objective function
-		// // V = h*w*d
-		// // objective = 1/V  // To maximize V, we minimize its reciprocal
+		// // "Maximizes box volume given area and aspect ratio constraints."
 
-		// // // Formulate the Model
-		// // m = Model(objective, constraints)
+		// // Parameters
+		alpha = new Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
+		beta = new Variable("beta", 10, "-", "upper limit, wall aspect ratio")
+		gamma = new Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
+		delta = new Variable("delta", 10, "-", "upper limit, floor aspect ratio")
+		A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
+		A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
 
-		// // // Solve the Model and print the results table
-		// // sol = m.solve(function(){
-		// // 	console.log(sol.table())
-		// // })
+		// Decision variables
+		h = new Variable("h", "m", "height")
+		w = new Variable("w", "m", "width")
+		d = new Variable("d", "m", "depth")
+		constraints = []
+		// Constraints
+
+		overload(function(){
+		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
+		    constraints.push(A_floor >= w*d,
+		               h/w >= alpha,
+		             h/w <= beta,
+		             d/w >= gamma,
+		             d/w <= delta)
+		             
+		    // // Objective function
+			V = h*w*d
+			objective = 1/V  // To maximize V, we minimize its reciprocal
+		})();
+		console.log(constraints)
+
+		// Forgot that I am already autoassembling posynomial inequalities
+		// for (var i = 0; i < constraints.length; i++) {
+		//     constraints[i].assemble()
+		//     //Do something
+		// }
+
+		// Formulate the Model
+		m = new Model(objective, constraints)
+		target = '/box'
+		// // Solve the Model and print the results table
+		sol = m.solve(target,function(){
+			console.log(sol.table())
+		})
 
 	</script>
 	<div id="output"></div>

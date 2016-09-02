@@ -16,9 +16,9 @@ class Solution(object):
 	def translateSol(self,sol,varDict):
 		for variableKey in varDict:
 			variable = varDict[variableKey]
-			print(variable)
+			# print(variable)
 			self.variables[variableKey] = Variable(variable.key.descr["name"],sol(variable),variableKey)
-		print(self.variables)
+		# print(self.variables)
 class Variable(object):
 	def __init__(self,name,value,ID):
 		self.name = name
@@ -34,18 +34,23 @@ class Solver(object):
 		  	resultString = str(line);
 		  self.modelDict = json.loads(resultString)
 	def solve(self):
+
 	  constraints = []
 	  varDict = {}
 	  for constraint in self.modelDict["constraints"]:
-	  	if type(constraint["left"]) == dict:
-	  		varProperties = constraint["left"]
-	  		# inputVarsDict[varProperties["ID"]] = varProperties
-	  		tempVar = gpkit.Variable(varProperties["name"])
-	  		constraint["left"] = tempVar
-	  		print(varProperties["ID"])
-	  		varDict[varProperties["ID"]] = tempVar
-	  	if constraint["oper"] == "geq":
-	  		constraints +=[constraint["left"] >= constraint["right"]]
+	  	# print type(constraint)
+	  	print ('processing left hand side')
+	  	leftSide = constraint["left"]
+	  	print leftSide["expArr"]
+	  	# if type(constraint["left"]) == dict:
+	  	# 	varProperties = constraint["left"]
+	  	# 	# inputVarsDict[varProperties["ID"]] = varProperties
+	  	# 	tempVar = gpkit.Variable(varProperties["name"])
+	  	# 	constraint["left"] = tempVar
+	  	# 	print(varProperties["ID"])
+	  	# 	varDict[varProperties["ID"]] = tempVar
+	  	# if constraint["oper"] == "geq":
+	  	# 	constraints +=[constraint["left"] >= constraint["right"]]
 	  costDict = self.modelDict["cost"]
 	  cost = varDict[costDict["ID"]]
 	  # costVar = Variable(cost["name"])
