@@ -41,7 +41,8 @@ class Solver(object):
 	  	# print type(constraint)
 	  	print ('processing left hand side')
 	  	leftSide = constraint["left"]
-	  	print leftSide["expArr"]
+	  	expArr = leftSide["expArr"]
+	  	
 	  	# if type(constraint["left"]) == dict:
 	  	# 	varProperties = constraint["left"]
 	  	# 	# inputVarsDict[varProperties["ID"]] = varProperties

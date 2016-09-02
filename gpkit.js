@@ -67,13 +67,22 @@ Variable = function (...args) {
     //     return JSON.stringify(this);
     // };
 };
-Signomial = function(monomialsArr){
-    //For each monomial we store its coefficient and then the monomial itself
+
+Posynomial = function(monomialsArr){
+    //Store the monomials
     this.monomialsArr = monomialsArr
+    this.isSignomial = false
 }
-Monomial = function(expArr,constants){
+
+Signomial = function(monomialsArr){
+    //Store the monomials
+    this.monomialsArr = monomialsArr
+    this.isSignomial = true
+}
+
+Monomial = function(expArr,constant){
     this.expArr = expArr
-    this.constants = constants
+    this.constants = constant
     this.__greaterThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
@@ -107,20 +116,27 @@ PosynomialInequality  = function(left,oper,right){
         if (!(nestedPosynomial instanceof Monomial)){
 
             if (side == 'left'){
-                this.left = new Monomial([nestedPosynomial,1],1)
+                this.left = new Posynomial([new Monomial([nestedPosynomial,1],1)]);
             }
             if (side == 'right'){
-                this.right = new Monomial([nestedPosynomial,1],1)
+                this.right = new Posynomial([new Monomial([nestedPosynomial,1],1)]);
             }
 
         }
-        if (nestedPosynomial instanceof Signomial){
-            for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
+        // if (nestedPosynomial instanceof Signomial){
+        //     for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
 
-            }
-        }
+        //     }
+        // }
         if (nestedPosynomial instanceof Monomial){
-            this.assembleMonomial(nestedPosynomial)
+            
+            if (side == 'left'){
+                this.left = new Posynomial([this.assembleMonomial(nestedPosynomial)]);
+            }
+            if (side == 'right'){
+                this.right = new Posynomial([this.assembleMonomial(nestedPosynomial)]);
+            }
+
         }
     }
     this.assembleMonomial = function(monomial){
