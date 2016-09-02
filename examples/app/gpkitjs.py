@@ -105,9 +105,8 @@ class Solver(object):
 	  	if constraint['oper'] == "geq":
 	  		constraints+=[left>=right]
 
-	  print constraints
-	  print "model dict"
-	  print self.modelDict["cost"]
+	  print "model dict cos"
+	  print self.createSignomial(self.modelDict["cost"],varDict)
 	  # print self.createSignomial(self.modelDict["cost"],varDict)
 
 	  costDict = self.modelDict["cost"]
