@@ -67,9 +67,15 @@ Variable = function (...args) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
+
     this.__doubleEqual = function(leftOperand){
         console.log('fired double equal')
     }
+
+    this.__plus = function(leftOperand){
+        console.log(leftOperand,this)
+    }
+
     // this.__equal
     // this.serialize = function () {
     //     return JSON.stringify(this);
@@ -80,6 +86,12 @@ Posynomial = function(monomialsArr){
     //Store the monomials
     this.monomialsArr = monomialsArr
     this.isSignomial = false
+    this.__greaterThanEqual = function (leftOperand) {
+        console.log('fired ineq from posy')
+        console.log(leftOperand,this)
+        var inequality = new PosynomialInequality(leftOperand,'geq',this)
+        return inequality
+    };
 }
 
 Signomial = function(monomialsArr){
@@ -101,12 +113,18 @@ Monomial = function(expArr,constant){
     }
     this.assemble = function(){
         this.expArr = flatten(this.expArr)
-        console.log(this.expArr)
+        // console.log(this.expArr)
     }
     this.__doubleEqual = function(leftOperand){
         console.log('fired equality')
         var equality = new PosynomialEquation(leftOperand,this)
         return equality
+    }
+    this.__plus = function(leftOperand){
+        // console.log(leftOperand,this)
+        var posynomial = new Posynomial([leftOperand,this])
+        // console.log(posynomial)
+        return posynomial
     }
     this.assemble()
 }
@@ -128,12 +146,12 @@ PosynomialEquation = function(left,right){
         this.assembleEquality(this.left,'left')
         // Handle the right side
         this.assembleEquality(this.right,'right')
-        console.log(this)
+        // console.log(this)
     }
     this.assembleEquality = function(nestedPosynomial,side){
         // console.log(nestedPosynomial,side)
         if (!(nestedPosynomial instanceof Monomial)){
-            console.log
+            // console.log
             if (side == 'left'){
                 this.left = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
@@ -167,20 +185,28 @@ PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
+    // console.log(this.right)
+    // console.log(this.left)
+    // console.log(this.right)
+    // console.log(left)
+    // console.log(right)
+
     // console.log(this.left)
     // console.log(this.right)
     // Assemble the nested left and right sides into monomials or signomials
-
+    
     this.assemble = function(){
         // Handle the left side
         this.assembleInequality(this.left,'left')
         // Handle the right side
         this.assembleInequality(this.right,'right')
-        console.log(this)
+        // console.log(this)
     }
     this.assembleInequality = function(nestedPosynomial,side){
-        // console.log(nestedPosynomial,side)
-        if (!(nestedPosynomial instanceof Monomial)){
+        console.log(nestedPosynomial,side)
+
+        if (!(nestedPosynomial instanceof Monomial) && !(nestedPosynomial instanceof Posynomial)){
+            // console.log('dealing with vars only')
             if (side == 'left'){
                 this.left = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
@@ -189,13 +215,11 @@ PosynomialInequality  = function(left,oper,right){
             }
 
         }
-        // if (nestedPosynomial instanceof Signomial){
-        //     for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
-
-        //     }
+        // if (nestedPosynomial instanceof Posynomial){
+        //     // console.log('dealing with a posynomial')
         // }
         if (nestedPosynomial instanceof Monomial){
-            // console.log('is instance')
+            // console.log('dealing with monomial')
             if (side == 'left'){
                 this.left = new Posynomial([assembleMonomial(nestedPosynomial)]);
             }
@@ -206,8 +230,9 @@ PosynomialInequality  = function(left,oper,right){
         }
         // console.log(this)
     }
-    
+
     this.assemble()
+
 }
 
 assembleMonomial = function(monomial){
@@ -244,7 +269,11 @@ flatten = function flatten(ary) {
             if(subArr[0] instanceof Monomial) {
                 // console.log('found monomial, going deeper')
                 ret = ret.concat(flatten(subArr[0].expArr));
-            } else {
+            } 
+            // if (subArr[0] instanceof Posynomial){
+            //     ret = ret.concat(flatten(subArr[0].monomialsArr[0]))
+            // }
+            else {
                 ret.push(ary[i]);
             }
         }

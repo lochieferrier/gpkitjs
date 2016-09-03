@@ -114,7 +114,7 @@ class Solver(object):
 	  	right = self.createSignomial(equality['right'],varDict)
 	  	# print varDict
 	  	left = right
-
+	  print constraints
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 
 	  print('final inputs to JS model')

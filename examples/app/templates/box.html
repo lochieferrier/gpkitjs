@@ -55,7 +55,7 @@
 		equalities = []
 
 		// Result
-		V = new Variable("V","m^3","box volume")
+		V = []
 
 		overload(function(){
 		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
@@ -65,27 +65,21 @@
 		               		 h/w <= beta,
 		                     d/w >= gamma,
 		                     d/w <= delta)
-		    equalities.push(V == h*w*d)
+		    // V == h*w*d
 		             
 		    // // Objective function
 			
 			
 		})();
+		console.log('posy constraint')
+		console.log(constraints[0])
 		objective = new Posynomial([new Monomial([[V,-1]],1)])
 
 		console.log('objective')
 		console.log(objective)
 
-		// console.log(constraints)
-
-		// Forgot that I am already autoassembling posynomial inequalities
-		// for (var i = 0; i < constraints.length; i++) {
-		//     constraints[i].assemble()
-		//     //Do something
-		// }
-
-		// Formulate the Model
 		m = new Model(objective, constraints, equalities)
+		console.log(m)
 		target = '/box'
 		// // Solve the Model and print the results table
 		sol = m.solve(target,function(){
