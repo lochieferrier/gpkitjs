@@ -24,6 +24,32 @@ class Variable(object):
 		self.name = name
 		self.value = value
 		self.ID = ID
+def parseJSVar(jsVar, varDict):
+	# print variableArr
+	# print 'printing jsvar'
+	# print jsVar
+	# print(type(jsVar))
+	if type(jsVar) == dict:
+		if "name" in jsVar:
+			# This means we got 
+			tempVar = gpkit.Variable(jsVar["name"])
+			if "units" in jsVar:
+				tempVar.units = jsVar["units"]
+			if "val" in jsVar:
+				tempVar = gpkit.Variable(str(tempVar.exps[0].keys()[0]),jsVar["val"],jsVar["units"])
+
+			if "label" in jsVar:
+				tempVar.label = jsVar["label"]
+			# print tempVar
+			# We have all these variables coming in, but need to track which is which, this was the point
+			# of the ID assignment
+			# We store variables in a dictionary under JS ID
+			if "ID" in jsVar:
+				if jsVar["ID"] not in varDict:
+					varDict[jsVar["ID"]] = tempVar
+				else:
+					tempVar = varDict[jsVar["ID"]]
+				return tempVar
 
 class Solver(object):
 	def __init__(self):
@@ -35,7 +61,7 @@ class Solver(object):
 		  self.modelDict = json.loads(resultString)
 	def createSignomial(self,JSsignomial,varDict):
 
-
+		# print JSsignomial
 	  	# expArr = leftSide["expArr"]
 	  	if not JSsignomial["isSignomial"]:
 	  		# print leftSide["monomialsArr"]
@@ -48,33 +74,10 @@ class Solver(object):
 	  			# print monomial["expArr"]
 	  			constant = 1
 	  			for variableArr in monomial["expArr"]:
-	  				# print variableArr
-
 	  				jsVar = variableArr[0]
-	  				# print 'printing jsvar'
-	  				# print jsVar
-
-	  				# print(type(jsVar))
-	  				if "name" in jsVar:
-	  					# This means we got 
-	  					tempVar = gpkit.Variable(jsVar["name"])
-	  					if "units" in jsVar:
-		  					tempVar.units = jsVar["units"]
-		  				if "val" in jsVar:
-		  					tempVar = gpkit.Variable(str(tempVar.exps[0].keys()[0]),jsVar["val"],jsVar["units"])
-
-		  				if "label" in jsVar:
-		  					tempVar.label = jsVar["label"]
-		  				# print tempVar
-		  				# We have all these variables coming in, but need to track which is which, this was the point
-		  				# of the ID assignment
-		  				# We store variables in a dictionary under JS ID
-		  				if "ID" in jsVar:
-			  				if jsVar["ID"] not in varDict:
-			  					varDict[jsVar["ID"]] = tempVar
-			  				else:
-			  					tempVar = varDict[jsVar["ID"]]
-			  				expDict[tempVar] = variableArr[1]  
+	  				if type(jsVar) == dict:
+	  					tempVar = parseJSVar(jsVar,varDict)
+				  		expDict[tempVar] = variableArr[1]  
 	  				else:
 	  					# If there isn't a name, it musn't be a variable, but instead
 	  					# a raw number
@@ -104,28 +107,20 @@ class Solver(object):
 	  		constraints+=[left<=right]
 	  	if constraint['oper'] == "geq":
 	  		constraints+=[left>=right]
+	  for equality in self.modelDict["equalities"]:
+	  	# print equality["left"]
+	  	left = self.createSignomial(equality['left'],varDict)
+	  	# print varDict
+	  	right = self.createSignomial(equality['right'],varDict)
+	  	# print varDict
+	  	left = right
 
-	  print "model dict cos"
-	  print self.createSignomial(self.modelDict["cost"],varDict)
-	  # print self.createSignomial(self.modelDict["cost"],varDict)
+	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 
-	  costDict = self.modelDict["cost"]
-	  cost = varDict[costDict["ID"]]
-	  # costVar = Variable(cost["name"])
-	  # constraint["left"] = tempVar
-	  print('final inputs to normal model')
-	  x = gpkit.Variable('x')
-	  constraintsNormal = []
-	  constraintsNormal += [x>=1]
-	  objectiveNormal = x
-	  print(objectiveNormal)
-	  print(constraintsNormal)
-
-	  mNormal = gpkit.Model(objectiveNormal,constraintsNormal)
-	 
 	  print('final inputs to JS model')
 	  print(cost)
 	  print(constraints)
+
 	  m = gpkit.Model(cost,constraints)
 	  sol = m.solve(verbosity=1)
 	  print('solution dict')

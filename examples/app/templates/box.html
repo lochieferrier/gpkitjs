@@ -46,27 +46,36 @@
 		A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
 		A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
 
+
 		// Decision variables
 		h = new Variable("h", "m", "height")
 		w = new Variable("w", "m", "width")
 		d = new Variable("d", "m", "depth")
 		constraints = []
-		// Constraints
-		objective = []
+		equalities = []
+
+		// Result
+		V = new Variable("V","m^3","box volume")
+
 		overload(function(){
 		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
-		    constraints.push(A_floor >= w*d,
-		               h/w >= alpha,
-		             h/w <= beta,
-		             d/w >= gamma,
-		             d/w <= delta)
+		    constraints.push(A_wall >= 2*h*w + 2*h*d,
+		    		   		 A_floor >= w*d,
+		               		 h/w >= alpha,
+		               		 h/w <= beta,
+		                     d/w >= gamma,
+		                     d/w <= delta)
+		    equalities.push(V == h*w*d)
 		             
 		    // // Objective function
-			V = h*w*d
-			objective = 1/V  // To maximize V, we minimize its reciprocal
+			
+			
 		})();
-		console.log(V)
+		objective = new Posynomial([new Monomial([[V,-1]],1)])
+
+		console.log('objective')
 		console.log(objective)
+
 		// console.log(constraints)
 
 		// Forgot that I am already autoassembling posynomial inequalities
@@ -76,7 +85,7 @@
 		// }
 
 		// Formulate the Model
-		m = new Model(objective, constraints)
+		m = new Model(objective, constraints, equalities)
 		target = '/box'
 		// // Solve the Model and print the results table
 		sol = m.solve(target,function(){
