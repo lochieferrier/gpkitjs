@@ -55,7 +55,7 @@
 		equalities = []
 
 		// Result
-		V = []
+		
 
 		overload(function(){
 		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
@@ -73,7 +73,7 @@
 		})();
 		console.log('posy constraint')
 		console.log(constraints[0])
-		objective = new Posynomial([new Monomial([[V,-1]],1)])
+		objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
 
 		console.log('objective')
 		console.log(objective)
