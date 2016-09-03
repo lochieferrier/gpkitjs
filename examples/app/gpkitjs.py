@@ -4,19 +4,18 @@ from json import JSONEncoder
 import json
 import numpy as np
 
+# Parse a Solution object into JSON, filtering for fixed or free variables
 class MyEncoder(JSONEncoder):
     def default(self, o):
-    	# print 'encoder'
-    	# print o.variables
-
+    	
     	cleanVarResults = {}
     	for varKey in o.variables:
     		# print type(o.variables[varKey].value)
     		if type(o.variables[varKey].value) != np.float64:
-    			print float(o.variables[varKey].value._magnitude)
+    			# print float(o.variables[varKey].value._magnitude)
     			cleanVarResults[varKey] = float(o.variables[varKey].value._magnitude)
     		else:
-    			print(float(o.variables[varKey].value))
+    			# print(float(o.variables[varKey].value))
     			cleanVarResults[varKey] = float(o.variables[varKey].value)
     		# print varDict[varKey].__dict__
     	return json.dumps({'variables':cleanVarResults})
@@ -40,10 +39,7 @@ class Variable(object):
 		self.value = value
 		self.ID = ID
 def parseJSVar(jsVar, varDict):
-	# print variableArr
-	# print 'printing jsvar'
-	# print jsVar
-	# print(type(jsVar))
+
 	if type(jsVar) == dict:
 		if "name" in jsVar:
 			# This means we got 
@@ -55,7 +51,6 @@ def parseJSVar(jsVar, varDict):
 
 			if "label" in jsVar:
 				tempVar.label = jsVar["label"]
-			# print tempVar
 			# We have all these variables coming in, but need to track which is which, this was the point
 			# of the ID assignment
 			# We store variables in a dictionary under JS ID
@@ -76,17 +71,13 @@ class Solver(object):
 		  self.modelDict = json.loads(resultString)
 	def createSignomial(self,JSsignomial,varDict):
 
-		# print JSsignomial
-	  	# expArr = leftSide["expArr"]
 	  	if not JSsignomial["isSignomial"]:
-	  		# print leftSide["monomialsArr"]
+
 	  		expDictList = []
 	  		constantsList = []
-	  		# print 'printing js signomial'
-	  		# print JSsignomial
+
 	  		for monomial in JSsignomial["monomialsArr"]:
 	  			expDict = {}
-	  			# print monomial["expArr"]
 	  			constant = 1
 	  			for variableArr in monomial["expArr"]:
 	  				jsVar = variableArr[0]
@@ -102,12 +93,9 @@ class Solver(object):
 	  				
 	  			expDictList += [expDict]
 	  			constantsList += [constant]
-	  			# print(constantsList)
-	  		# print tuple(expDictList)
-	  		# print tuple(constantsList)
+
 	  		return gpkit.Signomial(tuple(expDictList),tuple(constantsList))
 
-	  			# print expDict
 	def solve(self):
 
 	  constraints = []
@@ -115,9 +103,7 @@ class Solver(object):
 	  
 	  for constraint in self.modelDict["constraints"]:
 	  	left = self.createSignomial(constraint['left'],varDict)
-	  	# print varDict
 	  	right = self.createSignomial(constraint['right'],varDict)
-	  	# print varDict
 	  	if constraint['oper'] == "leq":
 	  		constraints+=[left<=right]
 	  	if constraint['oper'] == "geq":
@@ -129,21 +115,21 @@ class Solver(object):
 	  # 	right = self.createSignomial(equality['right'],varDict)
 	  # 	# print varDict
 	  # 	left = right
-	  print constraints
-	  print self.modelDict["cost"]
+	  # print constraints
+	  # print self.modelDict["cost"]
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
-	  print cost
-	  print('final inputs to JS model')
+	  # print cost
+	  # print('final inputs to JS model')
 	  
-	  print(constraints)
+	  # print(constraints)
 
 	  m = gpkit.Model(cost,constraints)
 	  sol = m.solve(verbosity=1)
-	  print('solution dict')
+	  # print('solution dict')
 	  # print(sol.program.result["variables"])
 	  jsSol = Solution()
 	  jsSol.translateSol(sol,varDict)
 
 	  output = MyEncoder().encode(jsSol)
-	  print output
+	  # print output
 	  return output

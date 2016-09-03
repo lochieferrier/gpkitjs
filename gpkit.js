@@ -72,9 +72,9 @@ Variable = function (...args) {
         console.log('fired double equal')
     }
 
-    this.__plus = function(leftOperand){
-        console.log(leftOperand,this)
-    }
+    // this.__plus = function(leftOperand){
+    //     // console.log(leftOperand,this)
+    // }
 
     // this.__equal
     // this.serialize = function () {
@@ -87,8 +87,6 @@ Posynomial = function(monomialsArr){
     this.monomialsArr = monomialsArr
     this.isSignomial = false
     this.__greaterThanEqual = function (leftOperand) {
-        console.log('fired ineq from posy')
-        console.log(leftOperand,this)
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
@@ -116,14 +114,11 @@ Monomial = function(expArr,constant){
         // console.log(this.expArr)
     }
     this.__doubleEqual = function(leftOperand){
-        console.log('fired equality')
         var equality = new PosynomialEquation(leftOperand,this)
         return equality
     }
     this.__plus = function(leftOperand){
-        // console.log(leftOperand,this)
         var posynomial = new Posynomial([leftOperand,this])
-        // console.log(posynomial)
         return posynomial
     }
     this.assemble()
@@ -133,7 +128,6 @@ Monomial = function(expArr,constant){
 
 // }
 assembleFromForEach = function(item,index){
-    console.log(item)
         item.assemble()
 }
 
@@ -149,9 +143,7 @@ PosynomialEquation = function(left,right){
         // console.log(this)
     }
     this.assembleEquality = function(nestedPosynomial,side){
-        // console.log(nestedPosynomial,side)
         if (!(nestedPosynomial instanceof Monomial)){
-            // console.log
             if (side == 'left'){
                 this.left = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
@@ -166,7 +158,6 @@ PosynomialEquation = function(left,right){
         //     }
         // }
         if (nestedPosynomial instanceof Monomial){
-            // console.log('is instance')
             if (side == 'left'){
                 this.left = new Posynomial([assembleMonomial(nestedPosynomial)]);
             }
@@ -185,14 +176,7 @@ PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
-    // console.log(this.right)
-    // console.log(this.left)
-    // console.log(this.right)
-    // console.log(left)
-    // console.log(right)
 
-    // console.log(this.left)
-    // console.log(this.right)
     // Assemble the nested left and right sides into monomials or signomials
     
     this.assemble = function(){
@@ -203,7 +187,6 @@ PosynomialInequality  = function(left,oper,right){
         // console.log(this)
     }
     this.assembleInequality = function(nestedPosynomial,side){
-        console.log(nestedPosynomial,side)
 
         if (!(nestedPosynomial instanceof Monomial) && !(nestedPosynomial instanceof Posynomial)){
             // console.log('dealing with vars only')
@@ -215,9 +198,7 @@ PosynomialInequality  = function(left,oper,right){
             }
 
         }
-        // if (nestedPosynomial instanceof Posynomial){
-        //     // console.log('dealing with a posynomial')
-        // }
+
         if (nestedPosynomial instanceof Monomial){
             // console.log('dealing with monomial')
             if (side == 'left'){
@@ -254,9 +235,6 @@ assembleMonomial = function(monomial){
 
         result = flatten(monomial.expArr)
 
-        // for(var i = 0; i < result.length; i++) {
-        //     dictLine = result[i]
-        // }
         return monomial
 }
 
@@ -270,9 +248,7 @@ flatten = function flatten(ary) {
                 // console.log('found monomial, going deeper')
                 ret = ret.concat(flatten(subArr[0].expArr));
             } 
-            // if (subArr[0] instanceof Posynomial){
-            //     ret = ret.concat(flatten(subArr[0].monomialsArr[0]))
-            // }
+
             else {
                 ret.push(ary[i]);
             }
@@ -311,8 +287,8 @@ function postData(data,target) {
 
 processReturnedSolJSON = function(response){
     parsedJSONObj = JSON.parse(JSON.parse(response));
-    console.log('parsed json obj')
-    console.log(parsedJSONObj)
+    // console.log('parsed json obj')
+    // console.log(parsedJSONObj)
     sol = new Solution()
     sol.variables = parsedJSONObj["variables"]
     return sol

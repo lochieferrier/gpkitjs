@@ -9,31 +9,7 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
 	<script>
-		// r = setupNums()
-		// //Testing out new operator overloading
-		// a = new Variable('a',2,'-')
-		// b = new Variable('b',3,'-')
-		// d = new Variable('d',3,'-')
-		// e = new Variable('e',2,'-')
-		// f = new Variable('f',3,'-')
-		// g = new Variable('g',3,'-')
-		// c = new Variable('c','-')
-		// constraints = [];
-		
-		// objective = 'none'
-		// console.log('pre multiplication')
-		// overload(function(){
-		//     // constraints.push(c>=a*b*d*e*f*g)
-		//     constraints.push(c>=(a^2))
 
-		//     // constraints.push(c<=a^2)
-		// })();
-		// console.log(constraints[0])
-		// constraints[0].assemble()
-		// console.log(constraints[0])
-		// objective = c
-		
-		// Add number operator overload
 		r = setupNums()
 
 		// // "Maximizes box volume given area and aspect ratio constraints."
@@ -54,39 +30,23 @@
 		constraints = []
 		equalities = []
 
-		// Result
-		
-
 		overload(function(){
-		 	// constraints.push(A_wall >= 2*h*w + 2*h*d)
 		    constraints.push(A_wall >= 2*h*w + 2*h*d,
 		    		   		 A_floor >= w*d,
 		               		 h/w >= alpha,
 		               		 h/w <= beta,
 		                     d/w >= gamma,
 		                     d/w <= delta)
-		    // V == h*w*d
-		             
-		    // // Objective function
-			
-			
 		})();
-		console.log('posy constraint')
-		console.log(constraints[0])
+
+		// Set up objective
 		objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
-
-		console.log('objective')
-		console.log(objective)
-
 		m = new Model(objective, constraints, equalities)
-		console.log(m)
 		target = '/box'
-		// // Solve the Model and print the results table
+
+		// Solve the Model and print the results table
 		sol = m.solve(target,function(){
-			console.log('w',sol.getVar(w))
-			console.log('h',sol.getVar(h))
-			console.log('d',sol.getVar(d))
-			// sol.table([h,w,d])
+			$('#output').html('<p>w ' + sol.getVar(w) +'</p><p>h ' + sol.getVar(h) + '</p><p>d ' + sol.getVar(d) + '</p')
 		})
 
 	</script>
