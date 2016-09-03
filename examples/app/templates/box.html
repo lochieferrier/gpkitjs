@@ -83,7 +83,10 @@
 		target = '/box'
 		// // Solve the Model and print the results table
 		sol = m.solve(target,function(){
-			console.log(sol.table())
+			console.log('w',sol.getVar(w))
+			console.log('h',sol.getVar(h))
+			console.log('d',sol.getVar(d))
+			// sol.table([h,w,d])
 		})
 
 	</script>

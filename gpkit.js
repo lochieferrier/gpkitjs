@@ -310,14 +310,30 @@ function postData(data,target) {
 
 
 processReturnedSolJSON = function(response){
-    parsedJSONObj = JSON.parse(response);
+    parsedJSONObj = JSON.parse(JSON.parse(response));
+    console.log('parsed json obj')
+    console.log(parsedJSONObj)
     sol = new Solution()
-    sol.variables = parsedJSONObj.variables
+    sol.variables = parsedJSONObj["variables"]
     return sol
 }
 
 Solution = function(){
     this.variables = {}
+    this.updateVars = function(inputVars){
+        outputVars = []
+        for(var i = 0; i < inputVars.length; i++) {
+            
+            outputVars[i] = new Variable()
+        }
+        return outputVars
+    }
+    this.getVar = function(inputVar){
+        return this.variables[inputVar.ID]
+    }
+    this.table = function(inputVars){
+
+    }
 }      
 setupNums = function(){
     Number.prototype.__lessThanEqual = function (leftOperand) {

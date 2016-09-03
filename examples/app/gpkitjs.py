@@ -2,22 +2,37 @@
 import gpkit
 from json import JSONEncoder
 import json
+import numpy as np
 
 class MyEncoder(JSONEncoder):
     def default(self, o):
-        return o.__dict__ 
+    	# print 'encoder'
+    	# print o.variables
+
+    	cleanVarResults = {}
+    	for varKey in o.variables:
+    		# print type(o.variables[varKey].value)
+    		if type(o.variables[varKey].value) != np.float64:
+    			print float(o.variables[varKey].value._magnitude)
+    			cleanVarResults[varKey] = float(o.variables[varKey].value._magnitude)
+    		else:
+    			print(float(o.variables[varKey].value))
+    			cleanVarResults[varKey] = float(o.variables[varKey].value)
+    		# print varDict[varKey].__dict__
+    	return json.dumps({'variables':cleanVarResults})
+        
 
 class Solution(object):
-	""" A model of a component's power:
 
-	"""
 	def __init__(self):
 		self.variables = {}
+		self.varDict = {}
 	def translateSol(self,sol,varDict):
 		for variableKey in varDict:
 			variable = varDict[variableKey]
 			# print(variable)
 			self.variables[variableKey] = Variable(variable.key.descr["name"],sol(variable),variableKey)
+		self.varDict = varDict
 		# print(self.variables)
 class Variable(object):
 	def __init__(self,name,value,ID):
@@ -125,8 +140,10 @@ class Solver(object):
 	  m = gpkit.Model(cost,constraints)
 	  sol = m.solve(verbosity=1)
 	  print('solution dict')
-	  print(sol.program.result["variables"])
+	  # print(sol.program.result["variables"])
 	  jsSol = Solution()
 	  jsSol.translateSol(sol,varDict)
+
 	  output = MyEncoder().encode(jsSol)
+	  print output
 	  return output
