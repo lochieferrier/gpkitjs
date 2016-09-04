@@ -1,6 +1,6 @@
 # gpkitjs
-Javascript interface to GPkit using Flask. The idea is to provide a way to hookup powerful IO to gpkit, without the overhead of matching data structures.
+Javascript wrapper for GPkit, built on Flask. The idea is to hookup powerful browser IO to gpkit.
 
 Key features:
 - Ability to create and run solutions in js using gpkit syntax.
-- Client side nomial system allows for flexibility in creation of models.
+- Operator overloading, no messy string equations.
