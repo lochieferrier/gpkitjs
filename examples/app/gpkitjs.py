@@ -69,33 +69,56 @@ class Solver(object):
 		  for line in r:
 		  	resultString = str(line);
 		  self.modelDict = json.loads(resultString)
-	def createSignomial(self,JSsignomial,varDict):
-		print JSsignomial
-	  	if not JSsignomial["isSignomial"]:
 
-	  		expDictList = []
-	  		constantsList = []
+	def createSignomial(self,JSinput,varDict):
+		print JSinput
 
-	  		for monomial in JSsignomial["monomialsArr"]:
-	  			expDict = {}
-	  			constant = 1
-	  			for variableArr in monomial["expArr"]:
-	  				jsVar = variableArr[0]
+		# Handle a JS monomial
+		if "expArr" in JSinput:
+			expDictList = []
+			constantsList = []
+			expDict = {}
+  			constant = 1
+  			for variableArr in JSinput["expArr"]:
+  				jsVar = variableArr[0]
 
-	  				if type(jsVar) == dict:
-	  					tempVar = parseJSVar(jsVar,varDict)
-				  		expDict[tempVar] = variableArr[1]  
-	  				else:
-	  					# If there isn't a name, it musn't be a variable, but instead
-	  					# a raw number
-	  					# print jsVar
-	  					constant*=jsVar
+  				if type(jsVar) == dict:
+  					tempVar = parseJSVar(jsVar,varDict)
+			  		expDict[tempVar] = variableArr[1]  
+  				else:
+  					# If there isn't a name, it musn't be a variable, but instead
+  					# a raw number
+  					# print jsVar
+  					constant*=jsVar
+  			expDictList += [expDict]
+  			constantsList += [constant]
+		else:
+			# Handle a JS posynomial
+		  	if not JSinput["isSignomial"]:
 
-	  				
-	  			expDictList += [expDict]
-	  			constantsList += [constant]
+		  		expDictList = []
+		  		constantsList = []
 
-	  		return gpkit.Signomial(tuple(expDictList),tuple(constantsList))
+		  		for monomial in JSinput["monomialsArr"]:
+		  			expDict = {}
+		  			constant = 1
+		  			for variableArr in monomial["expArr"]:
+		  				jsVar = variableArr[0]
+
+		  				if type(jsVar) == dict:
+		  					tempVar = parseJSVar(jsVar,varDict)
+					  		expDict[tempVar] = variableArr[1]  
+		  				else:
+		  					# If there isn't a name, it musn't be a variable, but instead
+		  					# a raw number
+		  					# print jsVar
+		  					constant*=jsVar
+
+		  				
+		  			expDictList += [expDict]
+		  			constantsList += [constant]
+
+		return gpkit.Signomial(tuple(expDictList),tuple(constantsList))
 
 	def solve(self):
 
@@ -103,12 +126,20 @@ class Solver(object):
 	  varDict = {}
 	  
 	  for constraint in self.modelDict["constraints"]:
+	  	print constraint
+	  	# Check for Monomial equality, if something else just make signomial inequality
+	  		
 	  	left = self.createSignomial(constraint['left'],varDict)
 	  	right = self.createSignomial(constraint['right'],varDict)
+
+	  	print left,right
 	  	if constraint['oper'] == "leq":
 	  		constraints+=[left<=right]
 	  	if constraint['oper'] == "geq":
 	  		constraints+=[left>=right]
+	  	if constraint['oper'] == "eq":
+	  		constraints+=[left==right]
+
 
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 	  # print cost

@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
 	<script>
-		console.log('hello')
+
 		r = setupNums()
 
 		// "Minimizes cylindrical tank surface area for a particular volume."
@@ -27,7 +27,7 @@
                V == d[0]*d[1]*d[2],
                M == V*rho)
 		})();
-		console.log(constraints[0].right)
+
 		objective = new Posynomial([new Monomial([[A,1]],1)])
 		m = new Model(objective, constraints)
 
@@ -36,43 +36,7 @@
 		sol = m.solve(target,function(){
 			$('#output').html('<p>A ' + sol.getVar(A))
 		})
-		// // // "Maximizes box volume given area and aspect ratio constraints."
-
-		// // // Parameters
-		// alpha = new Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
-		// beta = new Variable("beta", 10, "-", "upper limit, wall aspect ratio")
-		// gamma = new Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
-		// delta = new Variable("delta", 10, "-", "upper limit, floor aspect ratio")
-		// A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
-		// A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
-
-
-		// // Decision variables
-		// h = new Variable("h", "m", "height")
-		// w = new Variable("w", "m", "width")
-		// d = new Variable("d", "m", "depth")
-		// constraints = []
-		// equalities = []
-
-		// overload(function(){
-		//     constraints.push(A_wall >= 2*h*w + 2*h*d,
-		//     		   		 A_floor >= w*d,
-		//                		 h/w >= alpha,
-		//                		 h/w <= beta,
-		//                      d/w >= gamma,
-		//                      d/w <= delta)
-		// })();
-
-		// // Set up objective
-		// objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
-		// m = new Model(objective, constraints, equalities)
-		// target = '/tank'
-
-		// // Solve the Model and print the results table
-		// sol = m.solve(target,function(){
-		// 	$('#output').html('<p>w ' + sol.getVar(w) +'</p><p>h ' + sol.getVar(h) + '</p><p>d ' + sol.getVar(d) + '</p')
-		// })
-
+		
 	</script>
 	<div id="output"></div>
 {% endblock %}
