@@ -1,0 +1,39 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
+	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
+
+	<script>
+
+		//Add number operator overload, plan to get rid of this init step
+		r=setupNums()
+
+		// Decision variable
+		x = new Variable('x');
+
+		constraints = [];
+		
+		overload(function(){
+		    constraints.push(x>=1)
+		})();
+
+		// Objective (to minimize)
+		objective = new Posynomial([new Monomial([[x,1]],1)])
+		
+		// Formulate the Model
+		m = new Model(objective, constraints)
+		
+		target = '/simple'
+		// Solve the model
+		sol = m.solve(target,function(){
+			$('#output').html('<p>x: ' + sol.getVar(x))
+		})
+
+	</script>
+	<div id="output"></div>
+{% endblock %}
