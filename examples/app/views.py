@@ -29,8 +29,15 @@ def box():
                            title='gpkitjs',
                            )
 
+@app.route('/tank', methods=['GET'])
+def tank():
+  return render_template('tank.html',
+                           title='gpkitjs',
+                           )
+
 @app.route('/simple', methods=['POST'])
 @app.route('/box', methods=['POST'])
+@app.route('/tank', methods=['POST'])
 def solve():
   r= request.form
   print(r)

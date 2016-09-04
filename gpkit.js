@@ -72,15 +72,29 @@ Variable = function (...args) {
         console.log('fired double equal')
     }
 
-    // this.__plus = function(leftOperand){
-    //     // console.log(leftOperand,this)
-    // }
-
-    // this.__equal
-    // this.serialize = function () {
-    //     return JSON.stringify(this);
-    // };
 };
+
+VectorVariable = function(...args){
+    // The first argument should be the number of variables to make, after that it is the standard args for Variable
+    varArr = []
+    for(var i = 0; i < arguments[0]; i++) {
+        var slicedArgs = Array.prototype.slice.call(arguments, 1);
+        if (slicedArgs.length == 1){
+            newVar = new Variable(slicedArgs[0])
+        }
+        if (slicedArgs.length == 2){
+            newVar = new Variable(slicedArgs[0],slicedArgs[1])
+        }
+        if (slicedArgs.length == 3){
+            newVar = new Variable(slicedArgs[0],slicedArgs[1],slicedArgs[2])
+        }
+        if (slicedArgs.length == 4){
+            newVar = new Variable(slicedArgs[0],slicedArgs[1],slicedArgs[2],slicedArgs[3])
+        }
+        varArr.push(newVar)
+    }
+    return varArr
+}
 
 Posynomial = function(monomialsArr){
     //Store the monomials
@@ -114,7 +128,7 @@ Monomial = function(expArr,constant){
         // console.log(this.expArr)
     }
     this.__doubleEqual = function(leftOperand){
-        var equality = new PosynomialEquation(leftOperand,this)
+        var equality = new MonomialEquality(leftOperand,this)
         return equality
     }
     this.__plus = function(leftOperand){
@@ -124,54 +138,30 @@ Monomial = function(expArr,constant){
     this.assemble()
 }
 
-// Posynomial = function(){
+MonomialEquality = function(left,right){
+    console.log(left)
+    console.log(right)
+    console.log("expArr" in left)
 
-// }
+    if("expArr" in left){
+        this.left = assembleMonomial(left)
+    }
+    else{
+        this.left = new Monomial([[left,1]],1)
+    }
+    this.oper = '=='
+    if("expArr" in right){
+        this.right = assembleMonomial(right)
+    }
+    else{
+        this.right = new Monomial([[right,1]],1)
+    }
+}
+
 assembleFromForEach = function(item,index){
         item.assemble()
 }
 
-PosynomialEquation = function(left,right){
-    this.left = left
-    this.right = right
-
-    this.assemble = function(){
-        // Handle the left side
-        this.assembleEquality(this.left,'left')
-        // Handle the right side
-        this.assembleEquality(this.right,'right')
-        // console.log(this)
-    }
-    this.assembleEquality = function(nestedPosynomial,side){
-        if (!(nestedPosynomial instanceof Monomial)){
-            if (side == 'left'){
-                this.left = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
-            }
-            if (side == 'right'){
-                this.right = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
-            }
-
-        }
-        // if (nestedPosynomial instanceof Signomial){
-        //     for (var i = 0; i < nestedPosynomial.monomialsArr; i++) {
-
-        //     }
-        // }
-        if (nestedPosynomial instanceof Monomial){
-            if (side == 'left'){
-                this.left = new Posynomial([assembleMonomial(nestedPosynomial)]);
-            }
-            if (side == 'right'){
-                this.right = new Posynomial([assembleMonomial(nestedPosynomial)]);
-            }
-
-        }
-        // console.log(this)
-    }
-    
-    this.assemble()
-    
-}
 PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
@@ -196,7 +186,6 @@ PosynomialInequality  = function(left,oper,right){
             if (side == 'right'){
                 this.right = new Posynomial([new Monomial([[nestedPosynomial,1]],1)]);
             }
-
         }
 
         if (nestedPosynomial instanceof Monomial){
