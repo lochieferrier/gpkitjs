@@ -23,7 +23,7 @@
 		})();
 
 		// Objective (to minimize)
-		objective = x
+		objective = new Posynomial([new Monomial([[x,1]],1)])
 		
 		// Formulate the Model
 		m = new Model(objective, constraints)
@@ -31,7 +31,7 @@
 		target = '/simple'
 		// Solve the model
 		sol = m.solve(target,function(){
-			$('#output').html(sol.variables[x.ID].value)
+			$('#output').html('<p>x: ' + sol.getVar(x))
 		})
 
 	</script>
