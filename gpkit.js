@@ -104,6 +104,15 @@ Posynomial = function(monomialsArr){
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
+    this.__multiply = function(leftOperand){
+        console.log(this)
+
+        for(var i = 0; i < this.monomialsArr.length; i++) {
+            this.monomialsArr[i].expArr.push(new Monomial([[leftOperand,1],1]))
+        }
+        return new Posynomial(this.monomialsArr)
+    }
+
 }
 
 Signomial = function(monomialsArr){
@@ -133,15 +142,25 @@ Monomial = function(expArr,constant){
     }
     this.__plus = function(leftOperand){
         var posynomial = new Posynomial([leftOperand,this])
+        var flattenedMonomialsArr = []
+        // Add up if we have posynomials
+        for(var i = 0; i < posynomial.monomialsArr.length; i++) {
+            if (posynomial.monomialsArr[i] instanceof Posynomial){
+                flattenedMonomialsArr.push.apply(flattenedMonomialsArr,posynomial.monomialsArr[i].monomialsArr)
+            }
+            else{
+                flattenedMonomialsArr.push(posynomial.monomialsArr[i])
+            }
+        }
+        var posynomial = new Posynomial(flattenedMonomialsArr)
         return posynomial
+
     }
+
     this.assemble()
 }
 
 MonomialEquality = function(left,right){
-    console.log(left)
-    console.log(right)
-    console.log("expArr" in left)
 
     if("expArr" in left){
         this.left = assembleMonomial(left)
@@ -149,7 +168,7 @@ MonomialEquality = function(left,right){
     else{
         this.left = new Monomial([[left,1]],1)
     }
-    this.oper = '=='
+    this.oper = 'eq'
     if("expArr" in right){
         this.right = assembleMonomial(right)
     }
@@ -246,10 +265,10 @@ flatten = function flatten(ary) {
 }
 
 
-Model = function (cost,constraints,equalities){
+Model = function (cost,constraints){
     this.cost = cost
     this.constraints = constraints
-    this.equalities = equalities
+
     this.solution = new Solution()
     
     this.solve = function(target,callback){
@@ -319,6 +338,11 @@ setupNums = function(){
     Number.prototype.__bitwiseXOR = function(leftOperand){
         // console.log('bitwise xor power for numb')
         return new Monomial([leftOperand,this],1)
+    }
+    Number.prototype.__multiply = function(leftOperand){
+        console.log('fired multiply')
+        // // console.log('bitwise xor power for numb')
+        // return new Monomial([[leftOperand,1],[this,1]],1)
     }
 }
 

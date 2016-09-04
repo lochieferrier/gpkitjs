@@ -28,7 +28,6 @@
 		w = new Variable("w", "m", "width")
 		d = new Variable("d", "m", "depth")
 		constraints = []
-		equalities = []
 
 		overload(function(){
 		    constraints.push(A_wall >= 2*h*w + 2*h*d,
@@ -41,7 +40,7 @@
 
 		// Set up objective
 		objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
-		m = new Model(objective, constraints, equalities)
+		m = new Model(objective, constraints)
 		target = '/box'
 
 		// Solve the Model and print the results table
