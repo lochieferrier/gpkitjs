@@ -17,6 +17,7 @@ class MyEncoder(JSONEncoder):
     		else:
     			# print(float(o.variables[varKey].value))
     			cleanVarResults[varKey] = float(o.variables[varKey].value)
+
     		# print varDict[varKey].__dict__
     	return json.dumps({'variables':cleanVarResults})
         

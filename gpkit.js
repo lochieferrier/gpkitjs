@@ -106,7 +106,6 @@ Posynomial = function(monomialsArr){
         return inequality
     };
     this.__multiply = function(leftOperand){
-        console.log(this)
         outputMonomialsArr = []
         for(var i = 0; i < this.monomialsArr.length; i++) {
             monomial = this.monomialsArr[i]
