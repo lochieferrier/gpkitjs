@@ -41,9 +41,13 @@ class Variable(object):
 def parseJSVar(jsVar, varDict):
 
 	if type(jsVar) == dict:
+		# for varKey in varDict:
+		# 	# if jsVar["name"] == str(varDict[varKey].exps[0].keys()[0]):
+		# 	# 	arrNameAppend = True
 		if "name" in jsVar:
-			# This means we got 
+
 			tempVar = gpkit.Variable(jsVar["name"])
+
 			if "units" in jsVar:
 				tempVar.units = jsVar["units"]
 			if "val" in jsVar:
@@ -140,13 +144,12 @@ class Solver(object):
 	  	if constraint['oper'] == "eq":
 	  		constraints+=[left==right]
 
-
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 	  # print cost
 	  # print('final inputs to JS model')
 	  
-	  # print(constraints)
-
+	  print(constraints)
+	  print cost
 	  m = gpkit.Model(cost,constraints)
 	  sol = m.solve(verbosity=1)
 	  # print('solution dict')

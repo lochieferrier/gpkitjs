@@ -79,17 +79,18 @@ VectorVariable = function(...args){
     varArr = []
     for(var i = 0; i < arguments[0]; i++) {
         var slicedArgs = Array.prototype.slice.call(arguments, 1);
+        name = slicedArgs[0] + '_' + i.toString()
         if (slicedArgs.length == 1){
-            newVar = new Variable(slicedArgs[0])
+            newVar = new Variable(name)
         }
         if (slicedArgs.length == 2){
-            newVar = new Variable(slicedArgs[0],slicedArgs[1])
+            newVar = new Variable(name,slicedArgs[1])
         }
         if (slicedArgs.length == 3){
-            newVar = new Variable(slicedArgs[0],slicedArgs[1],slicedArgs[2])
+            newVar = new Variable(name,slicedArgs[1],slicedArgs[2])
         }
         if (slicedArgs.length == 4){
-            newVar = new Variable(slicedArgs[0],slicedArgs[1],slicedArgs[2],slicedArgs[3])
+            newVar = new Variable(name,slicedArgs[1],slicedArgs[2],slicedArgs[3])
         }
         varArr.push(newVar)
     }
