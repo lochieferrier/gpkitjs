@@ -23,11 +23,11 @@
 		constraints = []
 		overload(function(){
 			constraints.push(//A >= 2*(d[0]*d[1] + d[0]*d[2] + d[1]*d[2]),
-			   A >= d[0]*d[1] + d[0]*d[2] + d[1]*d[2],
+			   A >= 2*(d[0]*d[1] + d[0]*d[2] + d[1]*d[2]),
                V == d[0]*d[1]*d[2],
                M == V*rho)
 		})();
-
+		console.log(constraints)
 		objective = new Posynomial([new Monomial([[A,1]],1)])
 		m = new Model(objective, constraints)
 

@@ -106,11 +106,13 @@ Posynomial = function(monomialsArr){
     };
     this.__multiply = function(leftOperand){
         console.log(this)
-
+        outputMonomialsArr = []
         for(var i = 0; i < this.monomialsArr.length; i++) {
-            this.monomialsArr[i].expArr.push(new Monomial([[leftOperand,1],1]))
+            monomial = this.monomialsArr[i]
+            monomial.expArr.push([leftOperand,1])
+            outputMonomialsArr.push(monomial)
         }
-        return new Posynomial(this.monomialsArr)
+        return new Posynomial(outputMonomialsArr)
     }
 
 }
