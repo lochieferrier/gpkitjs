@@ -64,6 +64,7 @@ Variable = function (...args) {
         return inequality
     };
     this.__greaterThanEqual = function (leftOperand) {
+        console.log('fire an ineq')
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
@@ -318,8 +319,7 @@ Solution = function(){
     this.variables = {}
     this.updateVars = function(inputVars){
         outputVars = []
-        for(var i = 0; i < inputVars.length; i++) {
-            
+        for(var i = 0; i < inputVars.length; i++) {     
             outputVars[i] = new Variable()
         }
         return outputVars
@@ -348,6 +348,26 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
+        console.log(leftOperand,this)
+        console.log(leftOperand.right.monomialsArr[0].expArr[1][1])
+        if (leftOperand instanceof PosynomialInequality){
+            for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
+                monomial = leftOperand.right.monomialsArr[i]
+                powExpArr = []
+                for (var j=0; j < monomial.expArr.length; j++){
+                    expline = monomial.expArr[j]
+                    if (j == monomial.expArr.length -1){
+                        powExpArr.push([expline[0],expline[1]*this.valueOf()])
+                    }
+                    else{
+                        powExpArr.push([expline[0],expline[1]])
+                    }
+                }
+                monomial.expArr = powExpArr
+            } 
+            console.log(leftOperand.right.monomialsArr)
+            return leftOperand
+        }
         return new Monomial([[leftOperand,this.valueOf()]],1)
     }
     Number.prototype.__multiply = function(leftOperand){
@@ -821,7 +841,7 @@ exports.functionNames = funcNames;
         LogicalOR: 3,
         LogicalAND: 4,
         BitwiseOR: 5,
-        BitwiseXOR: 6,
+        BitwiseXOR: 12,
         BitwiseAND: 7,
         Equality: 8,
         Relational: 9,
