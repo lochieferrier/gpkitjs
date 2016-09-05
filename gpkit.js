@@ -272,7 +272,10 @@ Model = function (cost,constraints){
     this.constraints = constraints
 
     this.solution = new Solution()
-    
+    this.substitutions = {}
+    this.substitutions.update = function(sweepsDict){
+        console.log('fake')
+    }
     this.solve = function(target,callback){
 
         result = new Solution()
