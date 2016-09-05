@@ -150,6 +150,30 @@ Monomial = function(expArr,constant){
         var equality = new MonomialEquality(leftOperand,this)
         return equality
     }
+    this.__bitwiseXOR = function(leftOperand){
+        console.log('monomial exponent')
+        console.log(leftOperand,this)
+        if (leftOperand instanceof PosynomialInequality){
+            for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
+                monomial = leftOperand.right.monomialsArr[i]
+                powExpArr = []
+                for (var j=0; j < monomial.expArr.length; j++){
+                    expline = monomial.expArr[j]
+                    if (j == monomial.expArr.length -1){
+                        console.log('lastline')
+                        powExpArr.push([expline[0],expline[1]*this.expArr[0][0]])
+                    }
+                    else{
+                        powExpArr.push([expline[0],expline[1]])
+                    }
+                }
+                monomial.expArr = powExpArr
+            } 
+            console.log(leftOperand.right.monomialsArr)
+            return leftOperand
+        }
+        return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
+    }
     this.__plus = function(leftOperand){
         var posynomial = new Posynomial([leftOperand,this])
         var flattenedMonomialsArr = []
@@ -171,7 +195,6 @@ Monomial = function(expArr,constant){
 }
 
 MonomialEquality = function(left,right){
-
     if("expArr" in left){
         this.left = assembleMonomial(left)
     }
@@ -348,8 +371,8 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
+        console.log('number exponent')
         console.log(leftOperand,this)
-        console.log(leftOperand.right.monomialsArr[0].expArr[1][1])
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 monomial = leftOperand.right.monomialsArr[i]
@@ -357,6 +380,7 @@ setupNums = function(){
                 for (var j=0; j < monomial.expArr.length; j++){
                     expline = monomial.expArr[j]
                     if (j == monomial.expArr.length -1){
+                        console.log('lastline')
                         powExpArr.push([expline[0],expline[1]*this.valueOf()])
                     }
                     else{
@@ -841,7 +865,7 @@ exports.functionNames = funcNames;
         LogicalOR: 3,
         LogicalAND: 4,
         BitwiseOR: 5,
-        BitwiseXOR: 12,
+        BitwiseXOR: 6,
         BitwiseAND: 7,
         Equality: 8,
         Relational: 9,
