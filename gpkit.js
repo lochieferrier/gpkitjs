@@ -56,7 +56,7 @@ Variable = function (...args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        // console.log('bitwise xor power for var')
+        console.log('bitwise xor power for var')
         return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
@@ -131,8 +131,15 @@ Monomial = function(expArr,constant){
         return inequality
     };
     this.__divide = function (leftOperand){
-        // console.log('firing divide')
-        return new Monomial([[leftOperand,1],[this,-1]],1)
+        console.log('firing divide')
+        invertedExpArr = []
+        for(var i = 0; i < this.expArr.length; i++) {
+            expLine = this.expArr[i]
+            invertedExpArr.push([expLine[0],expLine[1]*-1])
+        }
+        console.log(invertedExpArr)
+        console.log(new Monomial(invertedExpArr,1))
+        return new Monomial(leftOperand.expArr.concat(invertedExpArr),1)
     }
     this.assemble = function(){
         this.expArr = flatten(this.expArr)
@@ -341,8 +348,7 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        // console.log('bitwise xor power for numb')
-        return new Monomial([leftOperand,this],1)
+        return new Monomial([[leftOperand,this.valueOf()]],1)
     }
     Number.prototype.__multiply = function(leftOperand){
         console.log('fired multiply')
