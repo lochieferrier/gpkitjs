@@ -12,11 +12,10 @@
 	<script>
 
 	    $(document).ready(function() {
-	      // console.log('doc ready')
+	      // Set up the slider
 	      var slider = document.getElementById('slider'); 
 	            noUiSlider.create(slider, {
 	          start: 20,
-	          // connect: true,
 	          range: {
 	            'min': 0,
 	            'max': 100
@@ -24,23 +23,16 @@
 	      });
 	      slider.noUiSlider.on('update', function( values, handle ) {
 	        if ( handle ) {
-	          // console.log(values[handle]);
-	          // performOpt(parseInt(values))
-
+	          //We don't use handle values
 	        } else {
-	          // console.log(values)
-	          // if (parseInt(values) > 0){
-	          	performOpt(parseInt(values))
-
-	          // }
+	          performOpt(parseInt(values))
 	        }
 	      });
 
 	    });
 
 	    performOpt = function(minX){
-	    	// minX = parseInt(minX)
-	    	// console.log(minX)
+
 	    	//Add number operator overload, plan to get rid of this init step
 
 			r=setupNums()
@@ -63,13 +55,8 @@
 			target = '/simple'
 			// Solve the model
 			sol = m.solve(target,function(){
-				// There seems to be an issue with undefined vars getting returned
-				// if (sol.getVar(x) > 0){
-					updateOutput(sol.getVar(x))
-				// }
-				if (typeof(sol.getVar(x)) == "undefined"){
-					console.log(sol)
-				}
+				// When the model is solved, update UI
+				updateOutput(sol.getVar(x))
 			})
 	    }
 
@@ -79,7 +66,7 @@
 		
 
 	</script>
-	<p>Control x minimum bound</p>
+	<p>Control x minimum bound with slider</p>
 	<div id="slider" style="width:30%"></div>
 	<div id="output"></div>
 {% endblock %}
