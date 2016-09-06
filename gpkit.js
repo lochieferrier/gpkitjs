@@ -155,23 +155,14 @@ Monomial = function(expArr,constant){
         console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
-                monomial = leftOperand.right.monomialsArr[i]
-                powExpArr = []
-                for (var j=0; j < monomial.expArr.length; j++){
-                    expline = monomial.expArr[j]
-                    if (j == monomial.expArr.length -1){
-                        console.log('lastline')
-                        powExpArr.push([expline[0],expline[1]*this.expArr[0][0]])
-                    }
-                    else{
-                        powExpArr.push([expline[0],expline[1]])
-                    }
-                }
-                monomial.expArr = powExpArr
+                var monomial = leftOperand.right.monomialsArr[i]
+                monomial.expArr.slice(-1)[0][1] = this.expArr[0][0]
+                monomial.expArr.push.apply(monomial.expArr,this.expArr.slice(1))
             } 
-            console.log(leftOperand.right.monomialsArr)
+            console.log(leftOperand.right.monomialsArr[0].expArr)
             return leftOperand
         }
+        console.log('still going')
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
@@ -375,19 +366,8 @@ setupNums = function(){
         console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
-                monomial = leftOperand.right.monomialsArr[i]
-                powExpArr = []
-                for (var j=0; j < monomial.expArr.length; j++){
-                    expline = monomial.expArr[j]
-                    if (j == monomial.expArr.length -1){
-                        console.log('lastline')
-                        powExpArr.push([expline[0],expline[1]*this.valueOf()])
-                    }
-                    else{
-                        powExpArr.push([expline[0],expline[1]])
-                    }
-                }
-                monomial.expArr = powExpArr
+                var monomial = leftOperand.right.monomialsArr[i]
+                monomial.expArr.slice(-1)[0][1] = this.valueOf()
             } 
             console.log(leftOperand.right.monomialsArr)
             return leftOperand
