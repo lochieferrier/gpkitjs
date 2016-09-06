@@ -56,11 +56,11 @@
 
 			constraints.push(C_D >= C_D_fuse + C_D_wpar+ C_D_ind)
 
-			// // # Wing weight model
-			// W_w_strc = W_W_coeff1*(N_ult*A^1.5*(W_0*W*S)^0.5)/tau
-			// W_w_surf = W_W_coeff2 * S
-			// console.log(constraints)
-			// constraints.push(W_w >= W_w_surf + W_w_strc)
+			// # Wing weight model
+			W_w_strc = W_W_coeff1*(N_ult*(A^1.5)*((W_0*W*S)^0.5))/tau
+			W_w_surf = W_W_coeff2 * S
+
+			constraints.push(W_w >= W_w_surf + W_w_strc)
 
 			// # and the rest of the models
 			constraints.push(D >= 0.5*rho*S*C_D*(V^2),
@@ -74,20 +74,21 @@
 			console.log(constraints[i])
 			console.log(constraints[i].show())
 		}
-		console.log("SINGLE\n======")
-		m = new Model(D, constraints)
+		// console.log("SINGLE\n======")
+		objective = new Posynomial([new Monomial([[D,1]],1)])
+		m = new Model(objective, constraints)
 		target = "/wing"
 		sol = m.solve(target,function(){
-			console.log(sol.table())
+			$('#output').html('<p>D: ' + sol.getVar(D))
 		})
-		console.log("SWEEP\n=====")
-		N = 2
-		sweeps = {V_min: ("sweep", numeric.linspace(20, 25, N)),
-		          V: ("sweep", numeric.linspace(45, 55, N)), }
-		m.substitutions.update(sweeps)
-		sweepsol = m.solve(target,function(){
-			console.log(sweepsol.table())
-		})
+		// console.log("SWEEP\n=====")
+		// N = 2
+		// sweeps = {V_min: ("sweep", numeric.linspace(20, 25, N)),
+		//           V: ("sweep", numeric.linspace(45, 55, N)), }
+		// m.substitutions.update(sweeps)
+		// sweepsol = m.solve(target,function(){
+		// 	console.log(sweepsol.table())
+		// })
 		
 	</script>
 	<div id="output"></div>

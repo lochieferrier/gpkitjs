@@ -147,8 +147,14 @@ Monomial = function(expArr,constant){
     this.__multiply = function(leftOperand){
         console.log('monomial multiply')
         console.log(leftOperand,this)
-        leftOperand.expArr.push.apply(leftOperand.expArr,this.expArr)
-        return new Monomial(leftOperand.expArr,1)
+        if (leftOperand instanceof Monomial){
+            leftOperand.expArr.push.apply(leftOperand.expArr,this.expArr)
+            return new Monomial(leftOperand.expArr,1)
+        }
+        if (leftOperand instanceof Variable){
+            this.expArr.unshift([leftOperand,1])
+            return this
+        }
     }
     this.__divide = function (leftOperand){
         console.log('firing monomial divide')
@@ -277,6 +283,7 @@ PosynomialInequality  = function(left,oper,right){
         this.assembleInequality(this.right,'right')
         // console.log(this)
     }
+    
     this.assembleInequality = function(nestedPosynomial,side){
 
         if (!(nestedPosynomial instanceof Monomial) && !(nestedPosynomial instanceof Posynomial)){
