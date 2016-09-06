@@ -162,8 +162,8 @@ Monomial = function(expArr,constant){
         return equality
     }
     this.__bitwiseXOR = function(leftOperand){
-        // console.log('monomial exponent')
-        // console.log(leftOperand,this)
+        console.log('monomial exponent')
+        console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
@@ -417,8 +417,8 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        console.log('number exponent')
-        console.log(leftOperand,this)
+        // console.log('number exponent')
+        // console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
@@ -427,10 +427,21 @@ setupNums = function(){
             // console.log(leftOperand.right.monomialsArr)
             return leftOperand
         }
-        return new Monomial([[leftOperand,this.valueOf()]],1)
+        if (leftOperand instanceof Monomial){
+            //Exponentiate all terms in the monomial
+            for(var i = 0; i < leftOperand.expArr.length; i++) {
+                var expline = leftOperand.expArr[i]
+                expline[1] = expline[1]*this.valueOf()
+                leftOperand.expArr[i] = expline
+            }
+            return leftOperand
+        }
+        if (leftOperand instanceof Variable){
+            return new Monomial([[leftOperand,this.valueOf()]],1)
+        }
     }
     Number.prototype.__multiply = function(leftOperand){
-        console.log('fired multiply')
+        // console.log('fired multiply')
         // // console.log('bitwise xor power for numb')
         // return new Monomial([[leftOperand,1],[this,1]],1)
     }
@@ -10131,7 +10142,7 @@ parseStatement: true, parseSourceElement: true */
             break;
 
         case '^':
-            prec = 8;
+            prec = 11;
             break;
 
         case '&':
