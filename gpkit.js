@@ -144,6 +144,7 @@ Monomial = function(expArr,constant){
     }
     this.__divide = function (leftOperand){
         console.log('firing monomial divide')
+        console.log(leftOperand,this)
         invertedExpArr = []
         for(var i = 0; i < this.expArr.length; i++) {
             expLine = this.expArr[i]
@@ -151,7 +152,17 @@ Monomial = function(expArr,constant){
         }
         console.log(invertedExpArr)
         console.log(new Monomial(invertedExpArr,1))
-        return new Monomial(leftOperand.expArr.concat(invertedExpArr),1)
+        if (leftOperand instanceof Number){
+            var outputExpArr = this.expArr.push.apply([leftOperand.valueOf(),1],invertedExpArr)
+            return new Monomial(outputExpArr,1)
+        }
+        if (typeof(leftOperand) == "number"){
+            console.log('number trigger')
+            var outputMonomial = new Monomial([[leftOperand,1]],1)
+            outputMonomial.expArr.push.apply(outputMonomial.expArr,invertedExpArr)
+            return outputMonomial
+        }
+
     }
     this.assemble = function(){
         this.expArr = flatten(this.expArr)
