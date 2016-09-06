@@ -73,6 +73,14 @@ Variable = function (...args) {
     this.__doubleEqual = function(leftOperand){
         console.log('fired double equal')
     }
+    this.__plus = function(leftOperand){
+        // Handle x + y, by turning it into a posynomial
+        console.log('var plus')
+        console.log(leftOperand,this)
+        var leftMonomial = new Monomial([[leftOperand,1]],1)
+        var thisMonomial = new Monomial([[this,1]],1)
+        return new Posynomial([leftMonomial,thisMonomial])
+    }
 
 };
 
@@ -150,8 +158,7 @@ Monomial = function(expArr,constant){
             expLine = this.expArr[i]
             invertedExpArr.push([expLine[0],expLine[1]*-1])
         }
-        console.log(invertedExpArr)
-        console.log(new Monomial(invertedExpArr,1))
+
         if (leftOperand instanceof Number){
             var outputExpArr = this.expArr.push.apply([leftOperand.valueOf(),1],invertedExpArr)
             return new Monomial(outputExpArr,1)
@@ -161,6 +168,10 @@ Monomial = function(expArr,constant){
             var outputMonomial = new Monomial([[leftOperand,1]],1)
             outputMonomial.expArr.push.apply(outputMonomial.expArr,invertedExpArr)
             return outputMonomial
+        }
+        if (leftOperand instanceof Monomial){
+            leftOperand.expArr.push.apply(leftOperand.expArr,invertedExpArr)
+            return leftOperand
         }
 
     }
@@ -295,6 +306,9 @@ PosynomialInequality  = function(left,oper,right){
     this.show = function(){
         var outputString = ""
         for(var i = 0; i < this.left.monomialsArr.length; i++) {
+            if (i > 0){
+                outputString = outputString + "+ "
+            }
             var monomial = this.left.monomialsArr[i]
             outputString = outputString + monomial.show()
         }
@@ -305,6 +319,9 @@ PosynomialInequality  = function(left,oper,right){
             outputString = outputString + " " + ">=" + " "
         }
         for(var i = 0; i < this.right.monomialsArr.length; i++) {
+            if (i > 0){
+                outputString = outputString + "+ "
+            }
             var monomial = this.right.monomialsArr[i]
             outputString = outputString + monomial.show()
         }
