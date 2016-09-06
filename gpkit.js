@@ -48,7 +48,8 @@ Variable = function (...args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
-        // console.log('firing divide')
+        console.log('firing divide for variable')
+        console.log(leftOperand,this)
         return new Monomial([[leftOperand,1],[this,-1]],1)
     }
     this.__pow = function (leftOperand){
@@ -131,8 +132,12 @@ Monomial = function(expArr,constant){
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };
+    this.__lessThanEqual = function (leftOperand) {
+        var inequality = new PosynomialInequality(leftOperand,'leq',this)
+        return inequality
+    };
     this.__divide = function (leftOperand){
-        console.log('firing divide')
+        console.log('firing monomial divide')
         invertedExpArr = []
         for(var i = 0; i < this.expArr.length; i++) {
             expLine = this.expArr[i]
@@ -151,18 +156,18 @@ Monomial = function(expArr,constant){
         return equality
     }
     this.__bitwiseXOR = function(leftOperand){
-        console.log('monomial exponent')
-        console.log(leftOperand,this)
+        // console.log('monomial exponent')
+        // console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
                 monomial.expArr.slice(-1)[0][1] = this.expArr[0][0]
                 monomial.expArr.push.apply(monomial.expArr,this.expArr.slice(1))
             } 
-            console.log(leftOperand.right.monomialsArr[0].expArr)
+            // console.log(leftOperand.right.monomialsArr[0].expArr)
             return leftOperand
         }
-        console.log('still going')
+        // console.log('still going')
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
@@ -181,7 +186,32 @@ Monomial = function(expArr,constant){
         return posynomial
 
     }
-
+    this.show = function(){
+        var outputString = ""
+        for(var i = 0; i < this.expArr.length; i++) {
+            var expline = this.expArr[i]
+            //If the power is 1, we don't worry about printing the power
+            if (expline[1] == 1){
+                if (expline[0] instanceof Variable){
+                    outputString = outputString + expline[0].name
+                }
+                else{
+                    outputString = outputString + expline[0]
+                }
+            }
+            //Otherwise we print the power
+            else {
+                if (expline[0] instanceof Variable){
+                    outputString = outputString + expline[0].name + "^" + expline[1].toString()
+                }
+                else{
+                    outputString = outputString + expline[0]
+                }
+            }
+            outputString = outputString + " "
+        }
+        return outputString
+    }
     this.assemble()
 }
 
@@ -243,7 +273,26 @@ PosynomialInequality  = function(left,oper,right){
         }
         // console.log(this)
     }
-
+    // Function to make debugging inequalities easier on the client side,
+    // by displaying them as strings, similar to what gpkit does
+    this.show = function(){
+        var outputString = ""
+        for(var i = 0; i < this.left.monomialsArr.length; i++) {
+            var monomial = this.left.monomialsArr[i]
+            outputString = outputString + monomial.show()
+        }
+        if (this.oper == "leq"){
+            outputString = outputString + " " + "<=" + " "
+        }
+        if (this.oper == "geq"){
+            outputString = outputString + " " + ">=" + " "
+        }
+        for(var i = 0; i < this.right.monomialsArr.length; i++) {
+            var monomial = this.right.monomialsArr[i]
+            outputString = outputString + monomial.show()
+        }
+        return outputString
+    }
     this.assemble()
 
 }
@@ -355,21 +404,21 @@ setupNums = function(){
         return inequality
     };
     Number.prototype.__divide = function (leftOperand) {
-         // console.log('firing divide')
+        console.log('firing divide')
         return new Monomial([[leftOperand,1],[this,-1]],1)
     };
     Number.prototype.serialize = function () {
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        console.log('number exponent')
-        console.log(leftOperand,this)
+        // console.log('number exponent')
+        // console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
                 monomial.expArr.slice(-1)[0][1] = this.valueOf()
             } 
-            console.log(leftOperand.right.monomialsArr)
+            // console.log(leftOperand.right.monomialsArr)
             return leftOperand
         }
         return new Monomial([[leftOperand,this.valueOf()]],1)
