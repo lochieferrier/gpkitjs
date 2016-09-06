@@ -283,7 +283,7 @@ PosynomialInequality  = function(left,oper,right){
         this.assembleInequality(this.right,'right')
         // console.log(this)
     }
-    
+
     this.assembleInequality = function(nestedPosynomial,side){
 
         if (!(nestedPosynomial instanceof Monomial) && !(nestedPosynomial instanceof Posynomial)){
@@ -436,6 +436,7 @@ Solution = function(){
     }
 }      
 setupNums = function(){
+    ID = 0
     Number.prototype.__lessThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
         return inequality
