@@ -136,6 +136,12 @@ Monomial = function(expArr,constant){
         var inequality = new PosynomialInequality(leftOperand,'leq',this)
         return inequality
     };
+    this.__multiply = function(leftOperand){
+        console.log('monomial multiply')
+        console.log(leftOperand,this)
+        leftOperand.expArr.push.apply(leftOperand.expArr,this.expArr)
+        return new Monomial(leftOperand.expArr,1)
+    }
     this.__divide = function (leftOperand){
         console.log('firing monomial divide')
         invertedExpArr = []
@@ -411,8 +417,8 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        // console.log('number exponent')
-        // console.log(leftOperand,this)
+        console.log('number exponent')
+        console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
@@ -10125,7 +10131,7 @@ parseStatement: true, parseSourceElement: true */
             break;
 
         case '^':
-            prec = 4;
+            prec = 8;
             break;
 
         case '&':
