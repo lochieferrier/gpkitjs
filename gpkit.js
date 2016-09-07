@@ -416,6 +416,7 @@ processReturnedSolJSON = function(response){
     // console.log(parsedJSONObj)
     sol = new Solution()
     sol.variables = parsedJSONObj["variables"]
+    console.log(parsedJSONObj["varDict"])
     return sol
 }
 
