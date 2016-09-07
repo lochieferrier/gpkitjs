@@ -3,40 +3,90 @@
 
 {% block content %}
 
-	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
+	<script type="text/javascript" src="{{ url_for('static', filename='nouislider.min.js') }}"></script>
+ 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='nouislider.min.css') }}"></link>
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
-
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
 	<script>
 
-		r = setupNums()
+		$(document).ready(function() {
+		  setupModel()
+	      // Set up the inputs
+	      var inputArr = ["M","rho"]
+	      var inputInitialVals = [100,1000]
+	      for (var i = 0; i < inputArr.length; i++) {
+			inputStr = inputArr[i]
+			initialVal = inputInitialVals[i]
+			var $label = $('<p></p>').appendTo('body')
+			$label.html(inputStr+" is "+initialVal.toString())
+			$label.attr('id', inputStr+"_label");
+
+			var $slider = $('<div />').appendTo('body');
+			$slider.attr('id', inputStr);
+			$slider.attr('style', 'width: 30%');
+			idStr = '#' + inputStr
+			var slider = $(idStr)[0]
+
+			noUiSlider.create(slider, {
+			  start: initialVal,
+			  step: 1,
+			  range: {
+			    'min': 0,
+			    'max': initialVal + initialVal*3
+			  }
+			});
+			$(idStr)[0].noUiSlider.on('update', function( values, handle ) {
+				if ( handle ) {
+				  //We don't use handle values
+				} else{
+				  var id = this.target.id
+				  // console.log(id)
+
+				  if (inputArr.indexOf(this.target.id) > -1) {
+				  	// console.log(values[0])
+				  	window[this.target.id].val = parseFloat(values[0])
+				  	// console.log(window[this.target.id])
+				  	$('#' + this.target.id + '_label').html(this.target.id + " is " + parseFloat(values[0]))
+				  }
+				  performOpt()				  
+				}
+			});
+		  }
+	    });
+
+
+		
 
 		// "Minimizes cylindrical tank surface area for a particular volume."
+		setupModel = function(){
+			r = setupNums()
+			M = new Variable("M", 100, "kg", "Mass of Water in the Tank")
+			rho = new Variable("rho", 1000, "kg/m^3", "Density of Water in the Tank")
+			A = new Variable("A", "m^2", "Surface Area of the Tank")
+			V = new Variable("V", "m^3", "Volume of the Tank")
+			d = new VectorVariable(3, "d", "m", "Dimension Vector")
+		}
 
-		M = new Variable("M", 100, "kg", "Mass of Water in the Tank")
-		rho = new Variable("\\rho", 1000, "kg/m^3", "Density of Water in the Tank")
-		A = new Variable("A", "m^2", "Surface Area of the Tank")
-		V = new Variable("V", "m^3", "Volume of the Tank")
-		d = new VectorVariable(3, "d", "m", "Dimension Vector")
+		performOpt = function(){
+			constraints = []
+			overload(function(){
+				constraints.push(
+				   A >= 2*(d[0]*d[1] + d[0]*d[2] + d[1]*d[2]),
+	               V == d[0]*d[1]*d[2],
+	               M == V*rho)
+			})();
+			objective = new Posynomial([new Monomial([[A,1]],1)])
+			m = new Model(objective, constraints)
 
-		constraints = []
-		overload(function(){
-			constraints.push(//A >= 2*(d[0]*d[1] + d[0]*d[2] + d[1]*d[2]),
-			   A >= 2*(d[0]*d[1] + d[0]*d[2] + d[1]*d[2]),
-               V == d[0]*d[1]*d[2],
-               M == V*rho)
-		})();
-
-		objective = new Posynomial([new Monomial([[A,1]],1)])
-		m = new Model(objective, constraints)
-
-		// Solve the Model and print the results table
-		target = '/tank'
-		sol = m.solve(target,function(){
-			$('#output').html('<p>A: ' + sol.getVar(A))
-		})
+			// Solve the Model and print the results table
+			target = '/tank'
+			sol = m.solve(target,function(){
+				$('#output').html('<p>A: ' + sol.getVar(A)+'</p>')
+			})
 		
+		}
+
 	</script>
 	<div id="output"></div>
 {% endblock %}

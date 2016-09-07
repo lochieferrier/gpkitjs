@@ -21,7 +21,7 @@
 		document.body.appendChild( renderer.domElement );
 
 		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x33b4f4 ,wireframe:true} );
+		var material = new THREE.MeshBasicMaterial( { color: 0x33b4f4,wireframe:true} );
 		var cube = new THREE.Mesh( geometry, material );
 		geometry.dynamic = true
 		scene.add( cube );
@@ -72,8 +72,6 @@
 				}
 			});
 		  }
-	      
-
 	    });
 
 
