@@ -1,0 +1,171 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<script type="text/javascript" src="{{ url_for('static', filename='nouislider.min.js') }}"></script>
+ 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='nouislider.min.css') }}"></link>
+ 	<script type="text/javascript" src="{{ url_for('static', filename='three.js') }}"></script>
+ 	<script type="text/javascript" src="{{ url_for('static', filename='TrackballControls.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
+	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
+
+	<script>
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setSize( window.innerWidth/3, window.innerHeight/3 );
+		document.body.appendChild( renderer.domElement );
+
+		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x33b4f4,wireframe:true} );
+		var cube = new THREE.Mesh( geometry, material );
+		geometry.dynamic = true
+		scene.add( cube );
+		controls = new THREE.TrackballControls( camera,renderer.domElement );
+		// controls.target.set( 0, 0, 0 )
+		camera.position.z = 20;
+
+		$(document).ready(function() {
+		  setupModel()
+	      // Set up the inputs
+	      var inputArr = ["N_ult","V_min","C_Lmax","W_0"]
+	      var inputInitialVals = [3.8,22,1.5,4940]
+	      for (var i = 0; i < inputArr.length; i++) {
+			inputStr = inputArr[i]
+			initialVal = inputInitialVals[i]
+			var $label = $('<p></p>').appendTo('body')
+			$label.html(inputStr+" is "+initialVal.toString())
+			$label.attr('id', inputStr+"_label");
+
+			var $slider = $('<div />').appendTo('body');
+			$slider.attr('id', inputStr);
+			$slider.attr('style', 'width: 30%');
+			idStr = '#' + inputStr
+			var slider = $(idStr)[0]
+
+			noUiSlider.create(slider, {
+			  start: initialVal,
+			  step: 1,
+			  range: {
+			    'min': 0,
+			    'max': initialVal + initialVal*3
+			  }
+			});
+			$(idStr)[0].noUiSlider.on('update', function( values, handle ) {
+				if ( handle ) {
+				  //We don't use handle values
+				} else{
+				  var id = this.target.id
+				  // console.log(id)
+
+				  if (inputArr.indexOf(this.target.id) > -1) {
+				  	// console.log(values[0])
+				  	window[this.target.id].val = parseFloat(values[0])
+				  	// console.log(window[this.target.id])
+				  	$('#' + this.target.id + '_label').html(this.target.id + " is " + parseFloat(values[0]))
+				  }
+				  optModel()				  
+				}
+			});
+		  }
+	    });
+
+		var render = function () {
+			requestAnimationFrame( render );
+			controls.update()
+			// changes to the vertices
+			cube.geometry.verticesNeedUpdate = true;
+
+			// changes to the normals
+			cube.geometry.normalsNeedUpdate = true;
+			cube.scale.x = span
+			cube.scale.y = chord
+			cube.scale.z = thickness
+			renderer.render(scene, camera);
+		};
+
+		span = 1
+		chord = 1
+		thickness = 1
+
+		render()
+
+		setupModel = function(){
+			r = setupNums()
+
+			// "Minimizes airplane drag for a simple drag and structure model."
+
+			// # Constants
+			k = new Variable("k", 1.2, "-", "form factor")
+			e = new Variable("e", 0.95, "-", "Oswald efficiency factor")
+			mu = new Variable("\\mu", 1.78e-5, "kg/m/s", "viscosity of air")
+			pi = new Variable("\\pi", Math.PI, "-", "half of the circle constant")
+			rho = new Variable("\\rho", 1.23, "kg/m^3", "density of air")
+			tau = new Variable("\\tau", 0.12, "-", "airfoil thickness to chord ratio")
+			N_ult = new Variable("N_ult", 3.8, "-", "ultimate load factor")
+			V_min = new Variable("V_min", 22, "m/s", "takeoff speed")
+			C_Lmax = new Variable("C_Lmax", 1.5, "-", "max CL with flaps down")
+			S_wetratio = new Variable("(\\frac{S}{S_{wet}})", 2.05, "-", "wetted area ratio")
+			W_W_coeff1 = new Variable("W_{W_{coeff1}}", 8.71e-5, "1/m",
+			                      "Wing Weight Coefficent 1")
+			W_W_coeff2 = new Variable("W_{W_{coeff2}}", 45.24, "Pa",
+			                      "Wing Weight Coefficent 2")
+			CDA0 = new Variable("(CDA0)", 0.031, "m^2", "fuselage drag area")
+			W_0 = new Variable("W_0", 4940.0, "N", "aircraft weight excluding wing")
+		}
+
+		optModel = function(){
+			// # Free Variables
+			D = new Variable("D", "N", "total drag force")
+			A = new Variable("A", "-", "aspect ratio")
+			S = new Variable("S", "m^2", "total wing area")
+			V = new Variable("V", "m/s", "cruising speed")
+			W = new Variable("W", "N", "total aircraft weight")
+			Re = new Variable("Re", "-", "Reynold's number")
+			C_D = new Variable("C_D", "-", "Drag coefficient of wing")
+			C_L = new Variable("C_L", "-", "Lift coefficent of wing")
+			C_f = new Variable("C_f", "-", "skin friction coefficient")
+			W_w = new Variable("W_w", "N", "wing weight")
+
+			constraints = []
+
+			overload(function(){    
+				// # Drag model
+				C_D_fuse = CDA0/S
+				C_D_wpar = k*C_f*S_wetratio
+				C_D_ind = (C_L^2)/(pi*A*e)
+
+				constraints.push(C_D >= C_D_fuse + C_D_wpar+ C_D_ind)
+
+				// # Wing weight model
+				W_w_strc = W_W_coeff1*(N_ult*(A^1.5)*((W_0*W*S)^0.5))/tau
+				W_w_surf = W_W_coeff2 * S
+
+				constraints.push(W_w >= W_w_surf + W_w_strc)
+
+				// # and the rest of the models
+				constraints.push(D >= 0.5*rho*S*C_D*(V^2),
+				                Re <= (rho/mu)*V*((S/A)^0.5),
+				                C_f >= 0.074/(Re^0.2),
+				                W <= 0.5*rho*S*C_L*(V^2),
+				                W <= 0.5*rho*S*C_Lmax*(V_min^2),
+				                W >= W_0 + W_w)
+			})();
+
+			// console.log("SINGLE\n======")
+			objective = new Posynomial([new Monomial([[D,1]],1)])
+			m = new Model(objective, constraints)
+			target = "/wing"
+			sol = m.solve(target,function(){
+				$('#output').html('<p>D: ' + sol.getVar(D))
+				span = (sol.getVar(A)*sol.getVar(S))**0.5
+				chord = sol.getVar(S)/span
+				thickness = 0.12 * chord
+			})
+		}
+
+		
+	</script>
+	<div id="output"></div>
+{% endblock %}

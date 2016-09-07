@@ -75,8 +75,8 @@ Variable = function (...args) {
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
-        console.log('var plus')
-        console.log(leftOperand,this)
+        // console.log('var plus')
+        // console.log(leftOperand,this)
         var leftMonomial = new Monomial([[leftOperand,1]],1)
         var thisMonomial = new Monomial([[this,1]],1)
         return new Posynomial([leftMonomial,thisMonomial])
@@ -145,8 +145,8 @@ Monomial = function(expArr,constant){
         return inequality
     };
     this.__multiply = function(leftOperand){
-        console.log('monomial multiply')
-        console.log(leftOperand,this)
+        // console.log('monomial multiply')
+        // console.log(leftOperand,this)
         if (leftOperand instanceof Monomial){
             leftOperand.expArr.push.apply(leftOperand.expArr,this.expArr)
             return new Monomial(leftOperand.expArr,1)
@@ -157,8 +157,8 @@ Monomial = function(expArr,constant){
         }
     }
     this.__divide = function (leftOperand){
-        console.log('firing monomial divide')
-        console.log(leftOperand,this)
+        // console.log('firing monomial divide')
+        // console.log(leftOperand,this)
         invertedExpArr = []
         for(var i = 0; i < this.expArr.length; i++) {
             expLine = this.expArr[i]
@@ -170,7 +170,7 @@ Monomial = function(expArr,constant){
             return new Monomial(outputExpArr,1)
         }
         if (typeof(leftOperand) == "number"){
-            console.log('number trigger')
+            // console.log('number trigger')
             var outputMonomial = new Monomial([[leftOperand,1]],1)
             outputMonomial.expArr.push.apply(outputMonomial.expArr,invertedExpArr)
             return outputMonomial
