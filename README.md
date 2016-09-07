@@ -6,6 +6,7 @@ Key features:
 - Operator overloading, no messy string equations
 
 [Wing design example](demo.gif) enhanced with gpkitjs:
+
 ![demo gif]( demo.gif "Logo Title Text 1")
 
 
