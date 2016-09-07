@@ -8,13 +8,13 @@
  	<script type="text/javascript" src="{{ url_for('static', filename='TrackballControls.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
-
+	<p>Minimum drag wing design</p>
 	<script>
 		var scene = new THREE.Scene();
 		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 		var renderer = new THREE.WebGLRenderer();
-		renderer.setSize( window.innerWidth/3, window.innerHeight/3 );
+		renderer.setSize( window.innerWidth/1.1, window.innerHeight/3 );
 		document.body.appendChild( renderer.domElement );
 
 		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -40,7 +40,7 @@
 
 			var $slider = $('<div />').appendTo('body');
 			$slider.attr('id', inputStr);
-			$slider.attr('style', 'width: 30%');
+			$slider.attr('style', 'width: 90%');
 			idStr = '#' + inputStr
 			var slider = $(idStr)[0]
 
@@ -63,7 +63,7 @@
 				  	// console.log(values[0])
 				  	window[this.target.id].val = parseFloat(values[0])
 				  	// console.log(window[this.target.id])
-				  	$('#' + this.target.id + '_label').html(this.target.id + " is " + parseFloat(values[0]))
+				  	$('#' + this.target.id + '_label').html(this.target.id + " is " + parseFloat(values[0]) + ' ' + window[this.target.id].units)
 				  }
 				  optModel()				  
 				}
@@ -158,10 +158,12 @@
 			m = new Model(objective, constraints)
 			target = "/wing"
 			sol = m.solve(target,function(){
-				$('#output').html('<p>D: ' + sol.getVar(D))
+				if (sol.getVar(D) > 0){
+				$('#output').html('<p>Drag: ' + sol.getVar(D) + ' N')
 				span = (sol.getVar(A)*sol.getVar(S))**0.5
 				chord = sol.getVar(S)/span
 				thickness = 0.12 * chord
+				}
 			})
 		}
 
