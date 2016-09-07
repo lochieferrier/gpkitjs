@@ -2,14 +2,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+	<script type="text/javascript" src="{{ url_for('static', filename='plotly-latest.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='nouislider.min.js') }}"></script>
  	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='nouislider.min.css') }}"></link>
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
-
+	<p>Draw out the history of a tradeoff</p>
+	<div id="plotDiv"></div>
 	<script>
-
+		M_history = []
+		rho_history = []
+		A_history = []
 		$(document).ready(function() {
 		  setupModel()
 	      // Set up the inputs
@@ -30,9 +33,9 @@
 
 			noUiSlider.create(slider, {
 			  start: initialVal,
-			  step: 1,
+			  step: 10,
 			  range: {
-			    'min': 0,
+			    'min': 1,
 			    'max': initialVal + initialVal*3
 			  }
 			});
@@ -56,7 +59,51 @@
 	    });
 
 
-		
+		plotTradeOff = function(){
+			var trace1 = {
+				x:M_history,
+				y:rho_history,
+				z:A_history,
+				mode: 'markers',
+				marker: {
+					size: 12,
+					line: {
+					color: 'rgba(217, 217, 217, 0.14)',
+					width: 0.5},
+					opacity: 0.8},
+				
+				type: 'scatter3d'
+			};
+
+			var data = [trace1];
+			var layout = {margin: {
+				l: 0,
+				r: 0,
+				b: 0,
+				t: 0
+			  }
+			  ,xaxis: {
+					title: 'Mass of water in tank (kg)'
+				},
+				yaxis: {
+					title: 'Density of water in tank (kg/m^3)'
+				},
+				zaxis: {
+					title: 'Optimum surface area of tank (m^2)'
+				}};
+			plotDiv = $('#plotDiv')
+			if (plotDiv.html() == ""){
+				Plotly.newPlot(plotDiv[0], data, layout);
+			}
+			else{
+				// Plotly.purge(plotDiv[0])
+				Plotly.redraw(plotDiv[0], data, layout);
+			}
+			
+		}	
+
+		plotTradeOff()
+
 
 		// "Minimizes cylindrical tank surface area for a particular volume."
 		setupModel = function(){
@@ -83,10 +130,16 @@
 			target = '/tank'
 			sol = m.solve(target,function(){
 				$('#output').html('<p>A: ' + sol.getVar(A)+'</p>')
+				M_history.push(sol.getVar(M))
+				rho_history.push(sol.getVar(rho))
+				A_history.push(sol.getVar(A))
+				// console.log(M_history,rho_history,A_history)
+				plotTradeOff()
 			})
 		
 		}
 
 	</script>
 	<div id="output"></div>
+	
 {% endblock %}
