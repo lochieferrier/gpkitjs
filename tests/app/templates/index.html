@@ -1,0 +1,12 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
+	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
+	<h1>gpkit.js tests</h1>
+	
+{% endblock %}

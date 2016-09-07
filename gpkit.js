@@ -432,7 +432,7 @@ Solution = function(){
         return this.variables[inputVar.ID]
     }
     this.table = function(inputVars){
-
+        return 'big potato'
     }
 }      
 setupNums = function(){
