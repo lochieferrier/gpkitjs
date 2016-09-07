@@ -48,8 +48,8 @@ Variable = function (...args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
-        console.log('firing divide for variable')
-        console.log(leftOperand,this)
+        // console.log('firing divide for variable')
+        // console.log(leftOperand,this)
         return new Monomial([[leftOperand,1],[this,-1]],1)
     }
     this.__pow = function (leftOperand){
@@ -57,7 +57,7 @@ Variable = function (...args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        console.log('bitwise xor power for var')
+        // console.log('bitwise xor power for var')
         return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
@@ -65,7 +65,7 @@ Variable = function (...args) {
         return inequality
     };
     this.__greaterThanEqual = function (leftOperand) {
-        console.log('fire an ineq')
+        // console.log('fire an ineq')
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
     };

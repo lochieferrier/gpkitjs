@@ -76,7 +76,7 @@ class Solver(object):
 		  self.modelDict = json.loads(resultString)
 
 	def createSignomial(self,JSinput,varDict):
-		print JSinput
+		# print JSinput
 
 		# Handle a JS monomial
 		if "expArr" in JSinput:
@@ -131,13 +131,13 @@ class Solver(object):
 	  varDict = {}
 	  
 	  for constraint in self.modelDict["constraints"]:
-	  	print constraint
+	  	# print constraint
 	  	# Check for Monomial equality, if something else just make signomial inequality
 	  		
 	  	left = self.createSignomial(constraint['left'],varDict)
 	  	right = self.createSignomial(constraint['right'],varDict)
 
-	  	print left,right
+	  	# print left,right
 	  	if constraint['oper'] == "leq":
 	  		constraints+=[left<=right]
 	  	if constraint['oper'] == "geq":
@@ -149,8 +149,8 @@ class Solver(object):
 	  # print cost
 	  # print('final inputs to JS model')
 	  
-	  print(constraints)
-	  print cost
+	  # print(constraints)
+	  # print cost
 	  m = gpkit.Model(cost,constraints)
 	  sol = m.solve(verbosity=1)
 	  # print('solution dict')

@@ -3,51 +3,144 @@
 
 {% block content %}
 
-	<!-- <script type="text/javascript" src="{{ url_for('static', filename='overload.js') }}"></script>  -->
+	<script type="text/javascript" src="{{ url_for('static', filename='nouislider.min.js') }}"></script>
+ 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='nouislider.min.css') }}"></link>
+ 	<script type="text/javascript" src="{{ url_for('static', filename='three.js') }}"></script>
+ 	<script type="text/javascript" src="{{ url_for('static', filename='TrackballControls.js') }}"></script>
 	<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='gpkit.js') }}"></script>
 
 	<script>
 
-		r = setupNums()
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setSize( window.innerWidth/3, window.innerHeight/3 );
+		document.body.appendChild( renderer.domElement );
+
+		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x33b4f4 ,wireframe:true} );
+		var cube = new THREE.Mesh( geometry, material );
+		geometry.dynamic = true
+		scene.add( cube );
+		controls = new THREE.TrackballControls( camera,renderer.domElement );
+		// controls.target.set( 0, 0, 0 )
+		camera.position.z = 20;
+
+		$(document).ready(function() {
+		  setupModel()
+	      // Set up the inputs
+	      var inputArr = ["alpha","beta","gamma","delta","A_wall","A_floor"]
+	      var inputInitialVals = [2,10,2,10,200,50]
+	      for (var i = 0; i < inputArr.length; i++) {
+			inputStr = inputArr[i]
+			initialVal = inputInitialVals[i]
+			var $label = $('<p></p>').appendTo('body')
+			$label.html(inputStr+" is "+initialVal.toString())
+			$label.attr('id', inputStr+"_label");
+
+			var $slider = $('<div />').appendTo('body');
+			$slider.attr('id', inputStr);
+			$slider.attr('style', 'width: 30%');
+			idStr = '#' + inputStr
+			var slider = $(idStr)[0]
+
+			noUiSlider.create(slider, {
+			  start: initialVal,
+			  step: 1,
+			  range: {
+			    'min': 0,
+			    'max': initialVal + initialVal*3
+			  }
+			});
+			$(idStr)[0].noUiSlider.on('update', function( values, handle ) {
+				if ( handle ) {
+				  //We don't use handle values
+				} else{
+				  var id = this.target.id
+				  // console.log(id)
+
+				  if (inputArr.indexOf(this.target.id) > -1) {
+				  	// console.log(values[0])
+				  	window[this.target.id].val = parseFloat(values[0])
+				  	// console.log(window[this.target.id])
+				  	$('#' + this.target.id + '_label').html(this.target.id + " is " + parseFloat(values[0]))
+				  }
+				  performOpt()				  
+				}
+			});
+		  }
+	      
+
+	    });
+
+
+		var render = function () {
+			requestAnimationFrame( render );
+			controls.update()
+			// changes to the vertices
+			cube.geometry.verticesNeedUpdate = true;
+
+			// changes to the normals
+			cube.geometry.normalsNeedUpdate = true;
+			cube.scale.x = hResult
+			cube.scale.y = wResult
+			cube.scale.z = dResult
+			renderer.render(scene, camera);
+		};
+
+		hResult = 1
+		wResult = 1
+		dResult = 1
+
+		render()
+		
 
 		// // "Maximizes box volume given area and aspect ratio constraints."
-
+		setupModel = function(){
+			r = setupNums()
+			alpha = new Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
+			beta = new Variable("beta", 10, "-", "upper limit, wall aspect ratio")
+			gamma = new Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
+			delta = new Variable("delta", 10, "-", "upper limit, floor aspect ratio")
+			A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
+			A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
+		}
 		// // Parameters
-		alpha = new Variable("alpha", 2, "-", "lower limit, wall aspect ratio")
-		beta = new Variable("beta", 10, "-", "upper limit, wall aspect ratio")
-		gamma = new Variable("gamma", 2, "-", "lower limit, floor aspect ratio")
-		delta = new Variable("delta", 10, "-", "upper limit, floor aspect ratio")
-		A_wall = new Variable("A_{wall}", 200, "m^2", "upper limit, wall area")
-		A_floor = new Variable("A_{floor}", 50, "m^2", "upper limit, floor area")
+		setupModel()
+		
+		performOpt = function(){
+			// Decision variables
+			h = new Variable("h", "m", "height")
+			w = new Variable("w", "m", "width")
+			d = new Variable("d", "m", "depth")
+			constraints = []
 
+			overload(function(){
+			    constraints.push(A_wall >= 2*h*w + 2*h*d,
+			    		   		 A_floor >= w*d,
+			               		 h/w >= alpha,
+			               		 h/w <= beta,
+			                     d/w >= gamma,
+			                     d/w <= delta)
+			})();
 
-		// Decision variables
-		h = new Variable("h", "m", "height")
-		w = new Variable("w", "m", "width")
-		d = new Variable("d", "m", "depth")
-		constraints = []
+			// Set up objective
+			objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
+			m = new Model(objective, constraints)
+			target = '/box-IO'
 
-		overload(function(){
-		    constraints.push(A_wall >= 2*h*w + 2*h*d,
-		    		   		 A_floor >= w*d,
-		               		 h/w >= alpha,
-		               		 h/w <= beta,
-		                     d/w >= gamma,
-		                     d/w <= delta)
-		})();
-
-		// Set up objective
-		objective = new Posynomial([new Monomial([[h,-1],[w,-1],[d,-1]],1)])
-		m = new Model(objective, constraints)
-		target = '/box'
-
-		// Solve the Model and print the results table
-		sol = m.solve(target,function(){
-			$('#output').html('<p>w: ' + sol.getVar(w) +'</p><p>h: ' + sol.getVar(h) + '</p><p>d: ' + sol.getVar(d) + '</p')
-		})
+			// Solve the Model and print the results table
+			sol = m.solve(target,function(){
+				hResult = sol.getVar(h)
+				wResult = sol.getVar(w)
+				dResult = sol.getVar(d)
+			})
+		}
 
 	</script>
+
 	<div id="output"></div>
 {% endblock %}
