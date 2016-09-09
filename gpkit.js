@@ -416,12 +416,13 @@ processReturnedSolJSON = function(response){
     // console.log(parsedJSONObj)
     sol = new Solution()
     sol.variables = parsedJSONObj["variables"]
-    console.log(parsedJSONObj["varDict"])
+    // console.log(parsedJSONObj["varDict"])
     return sol
 }
 
 Solution = function(){
     this.variables = {}
+    this.varDict = {}
     this.updateVars = function(inputVars){
         outputVars = []
         for(var i = 0; i < inputVars.length; i++) {     
