@@ -47,8 +47,13 @@ def initVarFromGPkitSol(gpkitVar,sol):
 
 		valArr = [magArr]
 
-	print type(gpkitVar.units)
-	# prin/t units
+	# Units come back as either a pint quantity of magnitude 1 in the units described,
+	# or as a unicode string of the units, in the format that pint uses.
+	if isinstance(gpkitVar.units,unicode):
+		units = str(gpkitVar.units)
+	else:
+		units = str(gpkitVar.units.units)
+
 	if "label" in gpkitVar.__dict__:
 		label = gpkitVar.label
 	else:
