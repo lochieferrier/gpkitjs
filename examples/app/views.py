@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired
 from flask import request
 from json import JSONEncoder
 import json
-import gpkitjs 
+import gpkitjs
 
 @app.route('/')
 @app.route('/index')

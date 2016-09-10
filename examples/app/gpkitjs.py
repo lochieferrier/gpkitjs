@@ -10,15 +10,12 @@ class MyEncoder(JSONEncoder):
     	
     	cleanVarResults = {}
     	for varKey in o.variables:
-    		# print type(o.variables[varKey].value)
-    		if type(o.variables[varKey].value) != np.float64:
-    			# print float(o.variables[varKey].value._magnitude)
-    			cleanVarResults[varKey] = float(o.variables[varKey].value._magnitude)
-    		else:
-    			# print(float(o.variables[varKey].value))
-    			cleanVarResults[varKey] = float(o.variables[varKey].value)
-
-    		# print varDict[varKey].__dict__
+    		var = o.variables[varKey]
+    		print type(var)
+    		print type(var.valArr[0])
+    		print var.name
+    		cleanVarResults[varKey] = {"name":var.name,"valArr":var.valArr,"units":var.units,"label":var.label}
+    	print cleanVarResults
     	return json.dumps({'variables':cleanVarResults})
         
 
@@ -30,15 +27,47 @@ class Solution(object):
 	def translateSol(self,sol,varDict):
 		for variableKey in varDict:
 			variable = varDict[variableKey]
-			# print(variable)
-			self.variables[variableKey] = Variable(variable.key.descr["name"],sol(variable),variableKey)
+			 
+			self.variables[variableKey] = initVarFromGPkitSol(variable,sol)
 		self.varDict = varDict
-		# print(self.variables)
+
+def initVarFromGPkitSol(gpkitVar,sol):
+	# Sol will return one of two things when we query for a var, either a pint quantity
+	# or a numpy.float64 when it's something being optimized
+	print gpkitVar.__dict__
+	name = gpkitVar.key.descr["name"]
+	# print type(sol(gpkitVar))
+	if isinstance(sol(gpkitVar),np.float64):
+		valArr = [float(sol(gpkitVar))]
+	else:
+		magArr = float(sol(gpkitVar)._magnitude)
+		valArr = [magArr]
+
+	# Units come back as either a pint quantity of magnitude 1 in the units described,
+	# or as a unicode string of the units, in the format that pint uses.
+	if isinstance(gpkitVar.units,unicode):
+		units = str(gpkitVar.units)
+	else:
+		units = str(gpkitVar.units.units)
+
+	if "label" in gpkitVar.__dict__:
+		label = gpkitVar.label
+	else:
+		label = ""
+
+	returnVar = Variable(name,valArr,units,label)
+	
+	return returnVar
+
+		
 class Variable(object):
-	def __init__(self,name,value,ID):
+	def __init__(self,name,valArr,units,label):
 		self.name = name
-		self.value = value
-		self.ID = ID
+		self.valArr = valArr
+		self.units = units
+		self.label = label
+
+
 def parseJSVar(jsVar, varDict):
 
 	if type(jsVar) == dict:
@@ -152,7 +181,7 @@ class Solver(object):
 	  # print(constraints)
 	  # print cost
 	  m = gpkit.Model(cost,constraints)
-	  sol = m.solve(verbosity=1)
+	  sol = m.solve(verbosity=0)
 	  # print('solution dict')
 	  # print(sol.program.result["variables"])
 	  jsSol = Solution()

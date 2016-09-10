@@ -57,7 +57,7 @@
 			// Solve the model
 			sol = m.solve(target,function(){
 				// When the model is solved, update UI
-				updateOutput(sol.getVar(x))
+				updateOutput(sol.getVal(x))
 			})
 	    }
 

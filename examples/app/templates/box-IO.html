@@ -132,9 +132,10 @@
 
 			// Solve the Model and print the results table
 			sol = m.solve(target,function(){
-				hResult = sol.getVar(h)
-				wResult = sol.getVar(w)
-				dResult = sol.getVar(d)
+				hResult = sol.getVal(h)
+				wResult = sol.getVal(w)
+				dResult = sol.getVal(d)
+				console.log(sol.table())
 			})
 		}
 

@@ -45,7 +45,8 @@
 
 		// Solve the Model and print the results table
 		sol = m.solve(target,function(){
-			$('#output').html('<p>w: ' + sol.getVar(w) +'</p><p>h: ' + sol.getVar(h) + '</p><p>d: ' + sol.getVar(d) + '</p')
+			$('#output').html('<p>w: ' + sol.getVal(w) +'</p><p>h: ' + sol.getVal(h) + '</p><p>d: ' + sol.getVal(d) + '</p')
+			console.log(sol.table())
 		})
 
 	</script>

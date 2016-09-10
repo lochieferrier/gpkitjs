@@ -17,6 +17,10 @@ Variable = function (...args) {
     // After that, we may or may not get a value, so we check whether the next is a string or a number
     // If it is a string, we set units and leave value as undefined
     // If a number, we set value and then set units for the next arg, if there is one
+    // We als want to account for the unitless single name spec, and we do that using a unit flag
+
+    assignedUnits = false
+
     if (arguments.length < 1){
         console.log('the variable needs a name')
     }
@@ -29,7 +33,7 @@ Variable = function (...args) {
         }
         if(i==1){
             if (typeof arg == "number"){this.val = arg}
-            if (typeof arg == "string"){this.units = arg}
+            if (typeof arg == "string"){this.units = arg; assignedUnits = true}
         }
         if (i==2){
             if (typeof arguments[1] == "string"){
@@ -37,10 +41,14 @@ Variable = function (...args) {
             }
             if (typeof arguments[1] == "number"){
                 this.units = arg
+                assignedUnits = true
             }
         }
         if (i==3){
             this.label = arg
+        }
+        if(assignedUnits == false){
+            this.units = "-"
         }
     }
     this.ID = assignID()
@@ -433,6 +441,11 @@ Solution = function(){
     this.getVar = function(inputVar){
         return this.variables[inputVar.ID]
     }
+
+    this.getVal = function(inputVar){
+        return this.variables[inputVar.ID].valArr
+    }
+
     this.table = function(){
         var keys = [];
         outputStr = ""

@@ -14,7 +14,7 @@ class MyEncoder(JSONEncoder):
     		print type(var)
     		print type(var.valArr[0])
     		print var.name
-    		cleanVarResults[varKey] = {"name":var.name,"valArr":var.valArr[0],"units":var.units,"label":var.label}
+    		cleanVarResults[varKey] = {"name":var.name,"valArr":var.valArr,"units":var.units,"label":var.label}
     	print cleanVarResults
     	return json.dumps({'variables':cleanVarResults})
         
@@ -29,8 +29,6 @@ class Solution(object):
 			variable = varDict[variableKey]
 			 
 			self.variables[variableKey] = initVarFromGPkitSol(variable,sol)
-			# print self.variables[variableKey]
-			# self.variables[variableKey] = Variable(variable.key.descr["name"],sol(variable),variable.units,variableKey)
 		self.varDict = varDict
 
 def initVarFromGPkitSol(gpkitVar,sol):
@@ -42,9 +40,7 @@ def initVarFromGPkitSol(gpkitVar,sol):
 	if isinstance(sol(gpkitVar),np.float64):
 		valArr = [float(sol(gpkitVar))]
 	else:
-
 		magArr = float(sol(gpkitVar)._magnitude)
-
 		valArr = [magArr]
 
 	# Units come back as either a pint quantity of magnitude 1 in the units described,

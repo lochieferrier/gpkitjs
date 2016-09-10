@@ -158,10 +158,10 @@
 			m = new Model(objective, constraints)
 			target = "/wing"
 			sol = m.solve(target,function(){
-				if (sol.getVar(D) > 0){
-				$('#output').html('<p>Drag: ' + sol.getVar(D) + ' N')
-				span = (sol.getVar(A)*sol.getVar(S))**0.5
-				chord = sol.getVar(S)/span
+				if (sol.getVal(D) > 0){
+				$('#output').html('<p>Drag: ' + sol.getVal(D) + ' N')
+				span = (sol.getVal(A)*sol.getVal(S))**0.5
+				chord = sol.getVal(S)/span
 				thickness = 0.12 * chord
 				}
 			})

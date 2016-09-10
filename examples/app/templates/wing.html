@@ -79,7 +79,7 @@
 		m = new Model(objective, constraints)
 		target = "/wing"
 		sol = m.solve(target,function(){
-			$('#output').html('<p>D: ' + sol.getVar(D))
+			$('#output').html('<p>D: ' + sol.getVal(D))
 		})
 		// console.log("SWEEP\n=====")
 		// N = 2

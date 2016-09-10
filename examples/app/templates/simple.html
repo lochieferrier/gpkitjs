@@ -31,7 +31,7 @@
 		target = '/simple'
 		// Solve the model
 		sol = m.solve(target,function(){
-			$('#output').html('<p>x: ' + sol.getVar(x))
+			$('#output').html('<p>x: ' + sol.getVal(x))
 		})
 
 	</script>

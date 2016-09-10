@@ -129,10 +129,10 @@
 			// Solve the Model and print the results table
 			target = '/tank'
 			sol = m.solve(target,function(){
-				$('#output').html('<p>A: ' + sol.getVar(A)+'</p>')
-				M_history.push(sol.getVar(M))
-				rho_history.push(sol.getVar(rho))
-				A_history.push(sol.getVar(A))
+				$('#output').html('<p>A: ' + sol.getVal(A)+'</p>')
+				M_history.push(sol.getVal(M))
+				rho_history.push(sol.getVal(rho))
+				A_history.push(sol.getVal(A))
 				// console.log(M_history,rho_history,A_history)
 				plotTradeOff()
 			})
