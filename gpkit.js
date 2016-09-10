@@ -433,8 +433,21 @@ Solution = function(){
     this.getVar = function(inputVar){
         return this.variables[inputVar.ID]
     }
-    this.table = function(inputVars){
-        return 'big potato'
+    this.table = function(){
+        var keys = [];
+        outputStr = ""
+        for (var key in this.variables) {
+          if (this.variables.hasOwnProperty(key)) {
+            tempVar = this.variables[key]
+            outputStr = outputStr + tempVar["name"] + ": " + tempVar["valArr"]
+            if(tempVar["units"]!="dimensionless"){
+                outputStr = outputStr + " " + tempVar["units"]
+            }
+            outputStr = outputStr + "\n"
+          }
+        }
+        return outputStr
+
     }
 }      
 setupNums = function(){
