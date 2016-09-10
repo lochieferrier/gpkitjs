@@ -7,6 +7,6 @@ Key features:
 
 [Wing design example](demo.gif) enhanced with gpkitjs:
 
-![demo gif]( demo.gif "Logo Title Text 1")
+![demo gif]( demo.gif "demo")
 
 
