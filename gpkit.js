@@ -83,8 +83,8 @@ Variable = function (...args) {
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
-        console.log('var plus')
-        console.log(leftOperand,this)
+        // console.log('var plus')
+        // console.log(leftOperand,this)
         if (leftOperand instanceof Variable){
             var leftMonomial = new Monomial([[leftOperand,1]],1)
             var thisMonomial = new Monomial([[this,1]],1)
@@ -172,8 +172,8 @@ Monomial = function(expArr,constant){
         }
     }
     this.__divide = function (leftOperand){
-        // console.log('firing monomial divide')
-        // console.log(leftOperand,this)
+        console.log('firing monomial divide')
+        console.log(leftOperand,this)
         invertedExpArr = []
         for(var i = 0; i < this.expArr.length; i++) {
             expLine = this.expArr[i]
@@ -193,6 +193,11 @@ Monomial = function(expArr,constant){
         if (leftOperand instanceof Monomial){
             leftOperand.expArr.push.apply(leftOperand.expArr,invertedExpArr)
             return leftOperand
+        }
+        if (leftOperand instanceof Variable){
+            var newMonomial = new Monomial([[leftOperand,1]],1)
+            newMonomial.expArr.push.apply(newMonomial.expArr,invertedExpArr)
+            return newMonomial
         }
 
     }
@@ -220,8 +225,8 @@ Monomial = function(expArr,constant){
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
-        console.log('fired mono plus')
-        console.log(leftOperand,this)
+        // console.log('fired mono plus')
+        // console.log(leftOperand,this)
         var posynomial = new Posynomial([leftOperand,this])
         var flattenedMonomialsArr = []
         // Add up if we have posynomials

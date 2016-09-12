@@ -30,7 +30,8 @@
 		constraints = []
 
 		overload(function(){
-		    constraints.push(A_wall >= 2*h*w + 2*h*d + 2*w*d + d)
+		    constraints.push(A_wall >= 2*h*w + 2*h*d + 2*w*d + d,
+		    				 /*Monomial divided by number*/ A_wall <= w/(d*w))
 		})();
 		console.log('printing constraints')
 		for (var i =0;i<constraints.length;i++){
