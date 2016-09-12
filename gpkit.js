@@ -83,11 +83,19 @@ Variable = function (...args) {
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
-        // console.log('var plus')
-        // console.log(leftOperand,this)
-        var leftMonomial = new Monomial([[leftOperand,1]],1)
-        var thisMonomial = new Monomial([[this,1]],1)
-        return new Posynomial([leftMonomial,thisMonomial])
+        console.log('var plus')
+        console.log(leftOperand,this)
+        if (leftOperand instanceof Variable){
+            var leftMonomial = new Monomial([[leftOperand,1]],1)
+            var thisMonomial = new Monomial([[this,1]],1)
+            return new Posynomial([leftMonomial,thisMonomial])
+        }
+        if (leftOperand instanceof Posynomial){
+            var monomialsArr = leftOperand.monomialsArr
+            var thisMonomial = new Monomial([[this,1]],1)
+            monomialsArr.push(thisMonomial)
+            return new Posynomial(monomialsArr)
+        }
     }
 
 };
@@ -132,7 +140,6 @@ Posynomial = function(monomialsArr){
         }
         return new Posynomial(outputMonomialsArr)
     }
-
 }
 
 Signomial = function(monomialsArr){
@@ -213,6 +220,8 @@ Monomial = function(expArr,constant){
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
+        console.log('fired mono plus')
+        console.log(leftOperand,this)
         var posynomial = new Posynomial([leftOperand,this])
         var flattenedMonomialsArr = []
         // Add up if we have posynomials

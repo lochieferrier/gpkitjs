@@ -23,8 +23,14 @@ def box():
                            title='gpkitjs',
                            )
 
+@app.route('/testOperatorOverload', methods=['GET'])
+def oper():
+  return render_template('testOperatorOverload.html',
+                           title='gpkitjs',
+                           )
 
 @app.route('/testSolTable', methods=['POST'])
+@app.route('/testOperatorOverload', methods=['POST'])
 def solve():
   r= request.form
   print(r)
