@@ -10,7 +10,7 @@ assignID = function(){
 }
 
 //Variable object, derived from gpkit. ID property is hidden to the user, and is used for JSON indexing
-Variable = function (args) {
+Variable = function (...args) {
     // TODO: add readin for sweeps
     // Logic structure for reading in argumens is as follows:
     // The first element must be the name
@@ -100,7 +100,7 @@ Variable = function (args) {
 
 };
 
-VectorVariable = function(args){
+VectorVariable = function(...args){
     // The first argument should be the number of variables to make, after that it is the standard args for Variable
     varArr = []
     for(var i = 0; i < arguments[0]; i++) {
@@ -996,7 +996,7 @@ exports.functionNames = funcNames;
         BitwiseSHIFT: 10,
         Additive: 11,
         Multiplicative: 12,
-        //Power: 12,
+        Power: 12,
         Unary: 13,
         Postfix: 14,
         Call: 15,
