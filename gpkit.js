@@ -1,6 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 //Global ID counter, used to assign a unique ID to each variable
 ID = 0
+var debug = false
 
 //ID assignment function
 assignID = function(){
@@ -56,8 +57,10 @@ Variable = function (args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
-        // console.log('firing divide for variable')
-        // console.log(leftOperand,this)
+        if(debug==true){
+            console.log('firing divide for variable')
+            console.log(leftOperand,this)
+        }
         return new Monomial([[leftOperand,1],[this,-1]],1)
     }
     this.__pow = function (leftOperand){
@@ -79,7 +82,7 @@ Variable = function (args) {
     };
 
     this.__doubleEqual = function(leftOperand){
-        console.log('fired double equal')
+        console.log('fired double equal on var')
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
@@ -140,6 +143,11 @@ Posynomial = function(monomialsArr){
         }
         return new Posynomial(outputMonomialsArr)
     }
+    this.__doubleEqual = function(leftOperand){
+        if(debug==true){
+            console.log('fired double equal on posy')
+        }
+    }
 }
 
 Signomial = function(monomialsArr){
@@ -172,8 +180,10 @@ Monomial = function(expArr,constant){
         }
     }
     this.__divide = function (leftOperand){
-        console.log('firing monomial divide')
-        console.log(leftOperand,this)
+        if(debug==true){
+            console.log('firing monomial divide')
+            console.log(leftOperand,this)
+        }
         invertedExpArr = []
         for(var i = 0; i < this.expArr.length; i++) {
             expLine = this.expArr[i]
@@ -206,12 +216,18 @@ Monomial = function(expArr,constant){
         // console.log(this.expArr)
     }
     this.__doubleEqual = function(leftOperand){
+        if(debug==true){
+            console.log('fired double equal on monomial')
+            console.log(leftOperand,this)
+        }
         var equality = new MonomialEquality(leftOperand,this)
         return equality
     }
     this.__bitwiseXOR = function(leftOperand){
-        console.log('monomial exponent')
-        console.log(leftOperand,this)
+        if(debug==true){
+            console.log('monomial exponent')
+            console.log(leftOperand,this)
+        }
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
@@ -284,6 +300,16 @@ MonomialEquality = function(left,right){
     }
     else{
         this.right = new Monomial([[right,1]],1)
+    }
+
+    // Function to make debugging equalities easier on the client side,
+    // by displaying them as strings, similar to what gpkit does
+    this.show = function(){
+        var outputString = ""
+        outputString = outputString + this.left.show()
+        outputString = outputString + " " + "==" + " "
+        outputString = outputString + this.right.show()
+        return outputString
     }
 }
 
@@ -407,9 +433,6 @@ Model = function (cost,constraints){
 
     this.solution = new Solution()
     this.substitutions = {}
-    this.substitutions.update = function(sweepsDict){
-        console.log('fake')
-    }
     this.solve = function(target,callback){
 
         result = new Solution()
@@ -434,11 +457,8 @@ function postData(data,target) {
 
 processReturnedSolJSON = function(response){
     parsedJSONObj = JSON.parse(JSON.parse(response));
-    // console.log('parsed json obj')
-    // console.log(parsedJSONObj)
     sol = new Solution()
     sol.variables = parsedJSONObj["variables"]
-    // console.log(parsedJSONObj["varDict"])
     return sol
 }
 
@@ -495,14 +515,11 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
-        // console.log('number exponent')
-        // console.log(leftOperand,this)
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
                 monomial.expArr.slice(-1)[0][1] = this.valueOf()
             } 
-            // console.log(leftOperand.right.monomialsArr)
             return leftOperand
         }
         if (leftOperand instanceof Monomial){
