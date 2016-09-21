@@ -28,7 +28,7 @@ Variable = function (args) {
 
     for (var i = 0; i < arguments.length; i++) {
 
-        arg = arguments[i]
+        var arg = arguments[i]
         if(i==0){
             this.name = arg
         }
