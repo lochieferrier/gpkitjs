@@ -130,6 +130,10 @@ Posynomial = function(monomialsArr){
     //Store the monomials
     this.monomialsArr = monomialsArr
     this.isSignomial = false
+    this.__lessThanEqual = function (leftOperand) {
+        var inequality = new PosynomialInequality(leftOperand,'leq',this)
+        return inequality
+    };
     this.__greaterThanEqual = function (leftOperand) {
         var inequality = new PosynomialInequality(leftOperand,'geq',this)
         return inequality
