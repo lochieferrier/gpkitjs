@@ -54,6 +54,10 @@ Variable = function (args) {
     }
     this.ID = assignID()
     this.__multiply = function (leftOperand) {
+        if(debug==true){
+            console.log('multiply for var')
+            console.log(leftOperand,this)
+        }
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
@@ -139,6 +143,10 @@ Posynomial = function(monomialsArr){
         return inequality
     };
     this.__multiply = function(leftOperand){
+        if(debug==true){
+            console.log('x*posynomial')
+            console.log(leftOperand,this)
+        }
         outputMonomialsArr = []
         for(var i = 0; i < this.monomialsArr.length; i++) {
             monomial = this.monomialsArr[i]
@@ -245,8 +253,16 @@ Monomial = function(expArr,constant){
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
-        // console.log('fired mono plus')
-        // console.log(leftOperand,this)
+        if(debug==true){
+            console.log('fired mono plus')
+            console.log(leftOperand,this)
+        }
+
+        //Make it into a monomial for the assembly
+        if (leftOperand instanceof Variable){
+            leftOperand = new Monomial([[leftOperand,1]],1)
+        }
+
         var posynomial = new Posynomial([leftOperand,this])
         var flattenedMonomialsArr = []
         // Add up if we have posynomials
@@ -545,8 +561,9 @@ setupNums = function(){
         }
     }
     Number.prototype.__multiply = function(leftOperand){
-        // console.log('fired multiply')
-        // // console.log('bitwise xor power for numb')
+        console.log('fired multiply for numb')
+        console.log(leftOperand,this)
+        // console.log('bitwise xor power for numb')
         // return new Monomial([[leftOperand,1],[this,1]],1)
     }
 }
