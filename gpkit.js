@@ -477,7 +477,12 @@ Solution = function(){
     }
 
     this.getVal = function(inputVar){
-        return this.variables[inputVar.ID].valArr
+        if (this.variables[inputVar.ID] != undefined){
+            return this.variables[inputVar.ID].valArr
+        }
+        else{
+            return 'notConsideredInSolEqns'
+        }
     }
 
     this.table = function(){
