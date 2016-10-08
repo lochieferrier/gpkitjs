@@ -87,6 +87,8 @@ Variable = function (args) {
 
     this.__doubleEqual = function(leftOperand){
         console.log('fired double equal on var')
+        var equality = new MonomialEquality(leftOperand,this)
+        return equality
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
