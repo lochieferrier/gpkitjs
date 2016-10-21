@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 //Global ID counter, used to assign a unique ID to each variable
 ID = 0
-var debug = false
+var debug = true
 
 //ID assignment function
 assignID = function(){
@@ -72,7 +72,7 @@ Variable = function (args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        // console.log('bitwise xor power for var')
+        console.log('bitwise xor power for var')
         return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
@@ -86,7 +86,6 @@ Variable = function (args) {
     };
 
     this.__doubleEqual = function(leftOperand){
-        console.log('fired double equal on var')
         var equality = new MonomialEquality(leftOperand,this)
         return equality
     }
@@ -192,6 +191,13 @@ Monomial = function(expArr,constant){
             this.expArr.unshift([leftOperand,1])
             return this
         }
+        // if (leftOperand instanceof Posynomial){
+        //     console.log(leftOperand,this)
+        //     for (var i = 0; i < leftOperand.monomialsArr.length; i++){
+        //         leftOperand.monomialsArr[i].expArr.push.apply(leftOperand.monomialsArr[i].expArr,this.expArr)
+        //     }
+        //     return leftOperand
+        // }
     }
     this.__divide = function (leftOperand){
         if(debug==true){
@@ -542,6 +548,9 @@ setupNums = function(){
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
+        if (debug == true){
+            console.log('fired number bitwise xor',leftOperand,this)
+        }
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
@@ -559,7 +568,12 @@ setupNums = function(){
             return leftOperand
         }
         if (leftOperand instanceof Variable){
-            return new Monomial([[leftOperand,this.valueOf()]],1)
+            if(debug==true){
+                console.log('var conditional on fired number bitwise xor')
+            }
+            var mono = new Monomial([[leftOperand,this.valueOf()]],1)
+            console.log(mono)
+            return mono
         }
     }
     Number.prototype.__multiply = function(leftOperand){
