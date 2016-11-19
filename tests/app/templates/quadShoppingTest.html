@@ -20,8 +20,10 @@
 		// Battery
 		battery_mass = new Variable('battery_mass',0.01,'kg')
 		battery_energy = new Variable('battery_energy',7.52e4,'J')
+
 		battery_shopping = new ShoppingCart(goods={battery_energy: [200, 7.53, 533]},
 		                                bads={battery_mass: [1.189, 0.119, 0.804]})
+
 
 		// ESC
 		esc_mass = new Variable('esc_mass','kg')
@@ -51,7 +53,11 @@
 		constraints = []
 
 		overload(function(){
+<<<<<<< HEAD
 		    constraints.push(battery_shopping,
+=======
+		    constraints.push(//battery_shopping,
+>>>>>>> 43b093196011bf662ebe3cb5263a3cd71fbbcad0
 							   esc_power <= esc_specificPower*esc_mass,
 							  // motor_shopping,
 							   esc_power >= motor_power,
