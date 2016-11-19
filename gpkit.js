@@ -54,6 +54,10 @@ Variable = function (args) {
     }
     this.ID = assignID()
     this.__multiply = function (leftOperand) {
+        if(debug==true){
+            console.log('multiply for var')
+            console.log(leftOperand,this)
+        }
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__divide = function (leftOperand){
@@ -68,7 +72,7 @@ Variable = function (args) {
         return new Monomial([[leftOperand,1],[this,1]],1)
     }
     this.__bitwiseXOR = function(leftOperand){
-        // console.log('bitwise xor power for var')
+        console.log('bitwise xor power for var')
         return new Monomial([leftOperand,this],1)
     }
     this.__lessThanEqual = function (leftOperand) {
@@ -82,7 +86,8 @@ Variable = function (args) {
     };
 
     this.__doubleEqual = function(leftOperand){
-        console.log('fired double equal on var')
+        var equality = new MonomialEquality(leftOperand,this)
+        return equality
     }
     this.__plus = function(leftOperand){
         // Handle x + y, by turning it into a posynomial
@@ -139,6 +144,10 @@ Posynomial = function(monomialsArr){
         return inequality
     };
     this.__multiply = function(leftOperand){
+        if(debug==true){
+            console.log('x*posynomial')
+            console.log(leftOperand,this)
+        }
         outputMonomialsArr = []
         for(var i = 0; i < this.monomialsArr.length; i++) {
             monomial = this.monomialsArr[i]
@@ -182,6 +191,13 @@ Monomial = function(expArr,constant){
             this.expArr.unshift([leftOperand,1])
             return this
         }
+        // if (leftOperand instanceof Posynomial){
+        //     console.log(leftOperand,this)
+        //     for (var i = 0; i < leftOperand.monomialsArr.length; i++){
+        //         leftOperand.monomialsArr[i].expArr.push.apply(leftOperand.monomialsArr[i].expArr,this.expArr)
+        //     }
+        //     return leftOperand
+        // }
     }
     this.__divide = function (leftOperand){
         if(debug==true){
@@ -237,7 +253,7 @@ Monomial = function(expArr,constant){
                 var monomial = leftOperand.right.monomialsArr[i]
                 monomial.expArr.slice(-1)[0][1] = this.expArr[0][0]
                 monomial.expArr.push.apply(monomial.expArr,this.expArr.slice(1))
-            } 
+            }
             // console.log(leftOperand.right.monomialsArr[0].expArr)
             return leftOperand
         }
@@ -245,8 +261,16 @@ Monomial = function(expArr,constant){
         return new Monomial([[leftOperand,this.expArr[0][0].valueOf()]],1)
     }
     this.__plus = function(leftOperand){
-        // console.log('fired mono plus')
-        // console.log(leftOperand,this)
+        if(debug==true){
+            console.log('fired mono plus')
+            console.log(leftOperand,this)
+        }
+
+        //Make it into a monomial for the assembly
+        if (leftOperand instanceof Variable){
+            leftOperand = new Monomial([[leftOperand,1]],1)
+        }
+
         var posynomial = new Posynomial([leftOperand,this])
         var flattenedMonomialsArr = []
         // Add up if we have posynomials
@@ -281,7 +305,7 @@ Monomial = function(expArr,constant){
                     outputString = outputString + expline[0].name + "^" + expline[1].toString()
                 }
                 else{
-                    outputString = outputString + expline[0]
+                    outputString = outputString + expline[0] +  "^" + expline[1].toString()
                 }
             }
             outputString = outputString + " "
@@ -327,7 +351,7 @@ PosynomialInequality  = function(left,oper,right){
     this.right = right
 
     // Assemble the nested left and right sides into monomials or signomials
-    
+
     this.assemble = function(){
         // Handle the left side
         this.assembleInequality(this.left,'left')
@@ -421,7 +445,7 @@ flatten = function flatten(ary) {
             if(subArr[0] instanceof Monomial) {
                 // console.log('found monomial, going deeper')
                 ret = ret.concat(flatten(subArr[0].expArr));
-            } 
+            }
 
             else {
                 ret.push(ary[i]);
@@ -441,7 +465,7 @@ Model = function (cost,constraints){
 
         result = new Solution()
         sol = postData(this.serialize(),target).done(processReturnedSolJSON).done(function(){callback()})
-        
+
     }
 
     this.serialize = function(){
@@ -460,10 +484,17 @@ function postData(data,target) {
 
 
 processReturnedSolJSON = function(response){
-    parsedJSONObj = JSON.parse(JSON.parse(response));
-    sol = new Solution()
-    sol.variables = parsedJSONObj["variables"]
-    return sol
+    if(response != '"failedSolve"'){
+        parsedJSONObj = JSON.parse(JSON.parse(response));
+        sol = new Solution()
+        sol.variables = parsedJSONObj["variables"]
+        return sol
+    }
+    if (response == '"failedSolve"'){
+        response = response.substring(1, response.length - 1);
+        sol = response
+        return sol
+    }
 }
 
 Solution = function(){
@@ -471,11 +502,12 @@ Solution = function(){
     this.varDict = {}
     this.updateVars = function(inputVars){
         outputVars = []
-        for(var i = 0; i < inputVars.length; i++) {     
+        for(var i = 0; i < inputVars.length; i++) {
             outputVars[i] = new Variable()
         }
         return outputVars
     }
+    // Getting vars by ID, not namestr
     this.getVar = function(inputVar){
         return this.variables[inputVar.ID]
     }
@@ -505,7 +537,7 @@ Solution = function(){
         return outputStr
 
     }
-}      
+}
 setupNums = function(){
     ID = 0
     Number.prototype.__lessThanEqual = function (leftOperand) {
@@ -517,18 +549,21 @@ setupNums = function(){
         return inequality
     };
     Number.prototype.__divide = function (leftOperand) {
-        console.log('firing divide')
+        // console.log('firing divide')
         return new Monomial([[leftOperand,1],[this,-1]],1)
     };
     Number.prototype.serialize = function () {
         return JSON.stringify(this)
     };
     Number.prototype.__bitwiseXOR = function(leftOperand){
+        if (debug == true){
+            console.log('fired number bitwise xor',leftOperand,this)
+        }
         if (leftOperand instanceof PosynomialInequality){
             for(var i = 0; i < leftOperand.right.monomialsArr.length; i++) {
                 var monomial = leftOperand.right.monomialsArr[i]
                 monomial.expArr.slice(-1)[0][1] = this.valueOf()
-            } 
+            }
             return leftOperand
         }
         if (leftOperand instanceof Monomial){
@@ -540,15 +575,33 @@ setupNums = function(){
             }
             return leftOperand
         }
+        // if (leftOperand instanceof Posynomial){
+        //     //Exponentiate all terms in the posynomial
+        //     for(var j = 0; j < leftOperand.monomialsArr.length; j++){
+        //         for(var i = 0; i < leftOperand.monomialsArr[j].expArr.length; i++) {
+        //             var expline = leftOperand.monomialsArr[j].expArr[i]
+        //             expline[1] = expline[1]*this.valueOf()
+        //             leftOperand.monomialsArr[j].expArr[i] = expline
+        //         }
+        //     }
+        //     return leftOperand
+        // }
         if (leftOperand instanceof Variable){
-            return new Monomial([[leftOperand,this.valueOf()]],1)
+            if(debug==true){
+                console.log('var conditional on fired number bitwise xor')
+            }
+            var mono = new Monomial([[leftOperand,this.valueOf()]],1)
+            // console.log(mono)
+            return mono
         }
     }
     Number.prototype.__multiply = function(leftOperand){
-        // console.log('fired multiply')
-        // // console.log('bitwise xor power for numb')
+        console.log('fired multiply for numb')
+        console.log(leftOperand,this)
+        // console.log('bitwise xor power for numb')
         // return new Monomial([[leftOperand,1],[this,1]],1)
     }
+    return "success at setting up nums"
 }
 
 overload = require('operator-overloading')
