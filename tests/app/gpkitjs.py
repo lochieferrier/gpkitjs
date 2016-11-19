@@ -172,21 +172,21 @@ class Solver(object):
 	  varDict = {}
 
 	  for constraint in self.modelDict["constraints"]:
-	  	if constraint.constraintType in ["equality","inequality"]:
-	    	  	# Check for Monomial equality, if something else just make signomial inequality
-    		  	# print constraint
-    	  		left = self.createSignomial(constraint['left'],varDict)
-    	  		right = self.createSignomial(constraint['right'],varDict)
+		if constraint.constraintType in ["equality","inequality"]:
+			# Check for Monomial equality, if something else just make signomial inequality
+			# print constraint
+			left = self.createSignomial(constraint['left'],varDict)
+			right = self.createSignomial(constraint['right'],varDict)
 
-    	  		with SignomialsEnabled():
-    			  	if constraint['oper'] == "leq":
-    			  		constraints+=[left<=right]
-    			  	if constraint['oper'] == "geq":
-    			  		constraints+=[left>=right]
-    			  	if constraint['oper'] == "eq":
-    			  		constraints+=[left==right]
-       		 if constraint.constraintType == "shopping-cart":
-			print "woo shopping cart"
+			with SignomialsEnabled():
+				if constraint['oper'] == "leq":
+					constraints+=[left<=right]
+    				if constraint['oper'] == "geq":
+					constraints+=[left>=right]
+    				if constraint['oper'] == "eq":
+					constraints+=[left==right]
+		if constraint.constraintType == "shopping-cart":
+    			print "woo shopping cart"
 
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 

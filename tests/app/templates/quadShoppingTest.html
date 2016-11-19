@@ -34,8 +34,7 @@
 		motor_mass = new Variable('motor_mass',0.01,'kg')
 		motor_power = new Variable('motor_power',250,'W')
 		// motor_shopping = ShoppingCart(goods={motor_power: [49, 194.3, 59.2, 384.1]*units.W},
-		                              // bads={motor_mass: [16., 127, 13, 162]*units.grams})
-
+										// bads={motor_mass: [16., 127, 13, 162]*units.grams})
 		// Propeller
 		propeller_d = new Variable('propeller_d',0.1,'m')
 		propeller_efficiency = new Variable('propeller_efficiency',0.9,'-')
@@ -53,11 +52,7 @@
 		constraints = []
 
 		overload(function(){
-<<<<<<< HEAD
 		    constraints.push(battery_shopping,
-=======
-		    constraints.push(//battery_shopping,
->>>>>>> 43b093196011bf662ebe3cb5263a3cd71fbbcad0
 							   esc_power <= esc_specificPower*esc_mass,
 							  // motor_shopping,
 							   esc_power >= motor_power,
