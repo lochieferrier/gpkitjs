@@ -20,8 +20,8 @@
 		// Battery
 		battery_mass = new Variable('battery_mass',0.01,'kg')
 		battery_energy = new Variable('battery_energy',7.52e4,'J')
-		// battery_shopping = ShoppingCart(goods={battery_energy: [200, 7.53, 533]*units.kJ},
-		                                // bads={battery_mass: [1.189, 0.119, 0.804]*units.kg})
+		battery_shopping = new ShoppingCart(goods={battery_energy: [200, 7.53, 533]},
+		                                bads={battery_mass: [1.189, 0.119, 0.804]})
 
 		// ESC
 		esc_mass = new Variable('esc_mass','kg')
@@ -51,7 +51,7 @@
 		constraints = []
 
 		overload(function(){
-		    constraints.push(//battery_shopping,
+		    constraints.push(battery_shopping,
 							   esc_power <= esc_specificPower*esc_mass,
 							  // motor_shopping,
 							   esc_power >= motor_power,
@@ -63,7 +63,9 @@
 		})();
 		console.log('printing constraints')
 		for (var i =0;i<constraints.length;i++){
-			console.log(constraints[i].show())
+			if( (constraints[i] instanceof PosynomialInequality)){
+				console.log(constraints[i].show())
+			}
 		}
 		// Set up objective
 		objective = new Posynomial([new Monomial([[t_hover,-1]],1)])

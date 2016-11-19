@@ -172,28 +172,24 @@ class Solver(object):
 	  varDict = {}
 
 	  for constraint in self.modelDict["constraints"]:
-	  	# print constraint
-	  	# Check for Monomial equality, if something else just make signomial inequality
-	  	# print constraint
-	  	left = self.createSignomial(constraint['left'],varDict)
-	  	right = self.createSignomial(constraint['right'],varDict)
+	  	if constraint.constraintType in ["equality","inequality"]:
+	    	  	# Check for Monomial equality, if something else just make signomial inequality
+    		  	# print constraint
+    	  		left = self.createSignomial(constraint['left'],varDict)
+    	  		right = self.createSignomial(constraint['right'],varDict)
 
-	  	# print left,right
-	  	with SignomialsEnabled():
-		  	if constraint['oper'] == "leq":
-		  		constraints+=[left<=right]
-		  	if constraint['oper'] == "geq":
-		  		constraints+=[left>=right]
-		  	if constraint['oper'] == "eq":
-		  		constraints+=[left==right]
-		# print constraints[-1]
+    	  		with SignomialsEnabled():
+    			  	if constraint['oper'] == "leq":
+    			  		constraints+=[left<=right]
+    			  	if constraint['oper'] == "geq":
+    			  		constraints+=[left>=right]
+    			  	if constraint['oper'] == "eq":
+    			  		constraints+=[left==right]
+       		 if constraint.constraintType == "shopping-cart":
+			print "woo shopping cart"
 
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
-	  # print cost
-	  # print('final inputs to JS model')
 
-	  # print(constraints)
-	  # print cost
 	  m = gpkitModel(cost, constraints)
 	  so2 = feasibility_model(m.gp(),"max")
 	  # try
