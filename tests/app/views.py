@@ -30,7 +30,7 @@ def oper():
                            )
 
 @app.route('/quadShoppingTest', methods=['GET'])
-def oper():
+def quad():
   return render_template('quadShoppingTest.html',
                            title='gpkitjs',
                            )
@@ -38,6 +38,7 @@ def oper():
 
 @app.route('/testSolTable', methods=['POST'])
 @app.route('/testOperatorOverload', methods=['POST'])
+@app.route('/quadShoppingTest', methods=['POST'])
 def solve():
   r= request.form
   print(r)
