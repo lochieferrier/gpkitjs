@@ -195,12 +195,12 @@ class Solver(object):
 	  # print(constraints)
 	  # print cost
 	  m = gpkitModel(cost, constraints)
-	  # so2 = feasibility_model(m.gp(),"max")
+	  so2 = feasibility_model(m.gp(),"max")
 	  # try
 
 	  try:
 	  	  print 'presolve'
-		  sol = m.solve(verbosity=0,solver="mosek")
+		  sol = m.solve(verbosity=3,solver="cvxopt")
 		  print 'solved'
 	  except (RuntimeError, TypeError, NameError, ValueError, RuntimeWarning),e:
 	      print 'exception: ' + str(e)

@@ -11,24 +11,69 @@
 	<script>
 
 		r = setupNums()
-    
+
+		// Configuration
+		n_rotors = new Variable('n_rotors',4,'-')
+		payload_mass = new Variable('payload_mass',0.1,'kg')
+		structures_mass = new Variable('structures_mass',0.1,'kg')
+
+		// Battery
+		battery_mass = new Variable('battery_mass',0.01,'kg')
+		battery_energy = new Variable('battery_energy',7.52e4,'J')
+		// battery_shopping = ShoppingCart(goods={battery_energy: [200, 7.53, 533]*units.kJ},
+		                                // bads={battery_mass: [1.189, 0.119, 0.804]*units.kg})
+
+		// ESC
+		esc_mass = new Variable('esc_mass','kg')
+		esc_power = new Variable('esc_power','W')
+		esc_specificPower = new Variable('esc_specificPower',500,'W/kg')
+
+		// Motor
+		motor_mass = new Variable('motor_mass',0.01,'kg')
+		motor_power = new Variable('motor_power',250,'W')
+		// motor_shopping = ShoppingCart(goods={motor_power: [49, 194.3, 59.2, 384.1]*units.W},
+		                              // bads={motor_mass: [16., 127, 13, 162]*units.grams})
+
+		// Propeller
+		propeller_d = new Variable('propeller_d',0.1,'m')
+		propeller_efficiency = new Variable('propeller_efficiency',0.9,'-')
+
+		// Performance Variables
+		t_hover = new Variable('t_hover','s')
+		T_total = new Variable('T_total','N')
+		P_total = new Variable('P_total','W')
+		m_total = new Variable('m_total','kg')
+
+		// Environment
+		rho = new Variable('rho',1.225,'kg/m^3')
+		g = new Variable('g',9.8,'m/s/s')
+
 		constraints = []
 
 		overload(function(){
-		    constraints.push()
+		    constraints.push(//battery_shopping,
+							   esc_power <= esc_specificPower*esc_mass,
+							  // motor_shopping,
+							   esc_power >= motor_power,
+							   T_total <= 1.5705*rho*propeller_efficiency*n_rotors*(motor_power^0.6) * (propeller_d^0.6),
+							   m_total >= n_rotors*(esc_mass+motor_mass) + battery_mass+payload_mass+structures_mass,
+							   P_total >= n_rotors*esc_power,
+							   T_total >= m_total*g,
+							   t_hover <= battery_energy/P_total)
 		})();
 		console.log('printing constraints')
 		for (var i =0;i<constraints.length;i++){
 			console.log(constraints[i].show())
 		}
 		// Set up objective
-		objective = new Posynomial([new Monomial())])
+		objective = new Posynomial([new Monomial([[t_hover,-1]],1)])
 		m = new Model(objective, constraints)
-		target = '/testSolTable'
+		target = '/quadShoppingTest'
 
 		// Solve the Model and print the results table
 		sol = m.solve(target,function(){
 			console.log(sol.table())
+			console.log(sol.getVar(t_hover).valArr[0])
 		})
 
 	</script>
