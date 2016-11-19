@@ -9,7 +9,15 @@ assignID = function(){
     ID++;
     return id
 }
-
+ShoppingCart = function (goods,bads,taylor_order) {
+  var goods = (typeof goods !== 'undefined') ?  goods : [];
+  var bads = (typeof bads !== 'undefined') ?  bads : [];
+  var taylor_order = (typeof taylor_order !== 'undefined') ?  taylor_order : 10;
+  this.goods = goods
+  this.bads = bads
+  this.taylor_order = taylor_order
+  this.constraintType = "shopping-cart"
+}
 //Variable object, derived from gpkit. ID property is hidden to the user, and is used for JSON indexing
 Variable = function (args) {
     // TODO: add readin for sweeps
@@ -316,6 +324,7 @@ Monomial = function(expArr,constant){
 }
 
 MonomialEquality = function(left,right){
+    this.constraintType = "equality"
     if("expArr" in left){
         this.left = assembleMonomial(left)
     }
@@ -349,7 +358,7 @@ PosynomialInequality  = function(left,oper,right){
     this.left = left
     this.oper = oper
     this.right = right
-
+    this.constraintType = "inequality"
     // Assemble the nested left and right sides into monomials or signomials
 
     this.assemble = function(){

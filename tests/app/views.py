@@ -41,7 +41,7 @@ def quad():
 @app.route('/quadShoppingTest', methods=['POST'])
 def solve():
   r= request.form
-  print(r)
+  # print(r)
   for line in r:
   	resultString = str(line);
   solver = gpkitjs.Solver();

@@ -4,6 +4,7 @@ from gpkit import Variable as gpkitVariable
 from gpkit import Signomial as gpkitSignomial
 from gpkit import Model as gpkitModel
 from gpkit import SignomialsEnabled
+from gpkit import units
 from gpkit.feasibility import feasibility_model
 print ('done importing gpkit')
 print('importing json encoder')
@@ -13,6 +14,7 @@ print('done importing json')
 print('importing numpy')
 import numpy as np
 print('done importing numpy')
+from cvxshopping import ShoppingCart
 
 debug = False
 
@@ -86,7 +88,7 @@ class Variable(object):
 		self.label = label
 
 
-def parseJSVar(jsVar, varDict):
+def parseJSVar(jsVar, varDict,returnVar=False):
 
 	if type(jsVar) == dict:
 		# for varKey in varDict:
@@ -96,6 +98,7 @@ def parseJSVar(jsVar, varDict):
 			if "val" in jsVar:
 				jsVar["value"] = jsVar.pop("val")
 			tempVar = gpkitVariable(**jsVar)
+			print tempVar
 			# We have all these variables coming in, but need to track which is which, this was the point
 			# of the ID assignment
 			# We store variables in a dictionary under JS ID
@@ -104,7 +107,10 @@ def parseJSVar(jsVar, varDict):
 					varDict[jsVar["ID"]] = tempVar
 				else:
 					tempVar = varDict[jsVar["ID"]]
-				return tempVar.key
+				if returnVar:
+					return tempVar
+				else:
+					return tempVar.key
 
 class Solver(object):
 	def __init__(self):
@@ -172,7 +178,7 @@ class Solver(object):
 	  varDict = {}
 
 	  for constraint in self.modelDict["constraints"]:
-		if constraint.constraintType in ["equality","inequality"]:
+		if constraint['constraintType'] in ["equality","inequality"]:
 			# Check for Monomial equality, if something else just make signomial inequality
 			# print constraint
 			left = self.createSignomial(constraint['left'],varDict)
@@ -181,12 +187,32 @@ class Solver(object):
 			with SignomialsEnabled():
 				if constraint['oper'] == "leq":
 					constraints+=[left<=right]
-    				if constraint['oper'] == "geq":
+				if constraint['oper'] == "geq":
 					constraints+=[left>=right]
     				if constraint['oper'] == "eq":
 					constraints+=[left==right]
-		if constraint.constraintType == "shopping-cart":
-    			print "woo shopping cart"
+		if constraint['constraintType'] == "shopping-cart":
+				goods = {}
+				# print constraint
+				for parameter in constraint['goods']:
+					gpVariable = parseJSVar(parameter[0],varDict,returnVar=True)
+					options = parameter[1]*getattr(units,parameter[2])
+					print options.__dict__
+					print type(options)
+					print gpVariable.__dict__
+					print type(gpVariable)
+					goods[gpVariable] = options
+				bads = {}
+				for pair in constraint['bads']:
+					gpVariable = parseJSVar(pair[0],varDict,returnVar=True)
+					options = pair[1]*getattr(units,pair[2])
+					print options.__dict__
+					print type(options)
+					print gpVariable.__dict__
+					print type(gpVariable)
+					bads[gpVariable] = options
+
+				constraints+=ShoppingCart(goods=goods,bads=bads)
 
 	  cost = self.createSignomial(self.modelDict["cost"],varDict)
 

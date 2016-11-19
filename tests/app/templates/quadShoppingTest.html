@@ -18,11 +18,10 @@
 		structures_mass = new Variable('structures_mass',0.1,'kg')
 
 		// Battery
-		battery_mass = new Variable('battery_mass',0.01,'kg')
-		battery_energy = new Variable('battery_energy',7.52e4,'J')
-
-		battery_shopping = new ShoppingCart(goods={battery_energy: [200, 7.53, 533]},
-		                                bads={battery_mass: [1.189, 0.119, 0.804]})
+		battery_mass = new Variable('battery_mass','kg')
+		battery_energy = new Variable('battery_energy','J')
+		battery_shopping = new ShoppingCart(goods=[[battery_energy, [200, 7.53, 533],'kJ']],
+		                                bads=[[battery_mass, [1.189, 0.119, 0.804],'kg']])
 
 
 		// ESC
