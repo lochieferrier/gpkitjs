@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired
 from flask import request
 from json import JSONEncoder
 import json
-import gpkitjs 
+import gpkitjs
 
 @app.route('/')
 @app.route('/index')
@@ -28,6 +28,13 @@ def oper():
   return render_template('testOperatorOverload.html',
                            title='gpkitjs',
                            )
+
+@app.route('/quadShoppingTest', methods=['GET'])
+def oper():
+  return render_template('quadShoppingTest.html',
+                           title='gpkitjs',
+                           )
+
 
 @app.route('/testSolTable', methods=['POST'])
 @app.route('/testOperatorOverload', methods=['POST'])
